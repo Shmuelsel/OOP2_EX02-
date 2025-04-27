@@ -6,7 +6,7 @@
 
 class FlightBookingForm : public BookingForm {
 private:    
-    void setDefaultValues() override;
+    void initializeFields() override;
     
     std::array<std::pair<std::string, bool>, 5> timeSelection = {
         std::make_pair("Morning", false),

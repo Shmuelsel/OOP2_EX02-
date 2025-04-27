@@ -13,7 +13,7 @@ FlightBookingForm::FlightBookingForm(sf::RenderWindow& win, DialogueManager* man
 }
     
 
-void FlightBookingForm::setDefaultValues() {
+void FlightBookingForm::initializeFields() {
     time_t now = time(0);
     tm ltm;
     localtime_s(&ltm, &now);  // ✅ Safe alternative to localtime()

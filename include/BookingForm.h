@@ -5,6 +5,8 @@
 #include <vector>
 #include <string>
 #include <array>
+#include "FieldBase.h"
+
 class DialogueManager;
 
 struct PersonalInfo {
@@ -16,7 +18,7 @@ struct PersonalInfo {
 
 class BookingForm {
 protected:
-    std::vector<std::string> fieldLabels;
+    std::vector<std::unique_ptr<FieldBase>> fields;
     std::vector<std::string> userInput;
     std::size_t activeField = 0;
     sf::Clock cursorTimer;
@@ -26,8 +28,10 @@ protected:
     DialogueManager* formManager;
     PersonalInfo personalInfo;
 
-    virtual void setDefaultValues()=0 ;
+    virtual void initializeFields() = 0;
     void openConfirmationWindow();
+    void renderCommon(sf::RenderWindow& window);
+    bool handleCommonInput(sf::Event event);
 
 public:
     BookingForm(sf::RenderWindow& win, DialogueManager* manager);
