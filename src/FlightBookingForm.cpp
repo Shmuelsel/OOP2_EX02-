@@ -2,12 +2,14 @@
 #include "DialogueManager.h"
 #include <iostream>
 #include <ctime>  // For getting current date
+#include "config.h"
 
 FlightBookingForm::FlightBookingForm(sf::RenderWindow& win, DialogueManager* manager)
     : BookingForm(win,manager) {  // ✅ Calls base constructor
-    fieldLabels.insert(fieldLabels.end(), { "Departure Airport:", "Arrival Airport:",
-                   "Departure Date:",
-                   "Preferred Time:" });
+    fieldLabels.insert(fieldLabels.end(), Config::fieldLabelsFlight.begin(), Config::fieldLabelsFlight.end());
+	for (auto& field : Config::fieldsFlight) {
+        fields.push_back(std::move(field));
+	}
     userInput.resize(fieldLabels.size(), "");  // Resize to include all fields
     setDefaultValues();
 }
@@ -117,80 +119,82 @@ void FlightBookingForm::render(sf::RenderWindow& window) {
 }
 
 
-void FlightBookingForm::handleInput(sf::Event event) {
-    if (event.type == sf::Event::TextEntered) {
-        if (event.text.unicode == '\b' && !userInput[activeField].empty()) { 
-            userInput[activeField].pop_back();  // ✅ Handle Backspace
-        } 
-        else if (event.text.unicode >= 32 && event.text.unicode < 128) {
-            userInput[activeField] += static_cast<char>(event.text.unicode);  // ✅ Append typed character
-        }
-    } 
-    else if (event.type == sf::Event::KeyPressed) {
-        if (event.key.code == sf::Keyboard::Tab) {
-            activeField = (activeField + 1) % userInput.size();  // ✅ Move to next input field
-        }
-        if (event.key.code == sf::Keyboard::Return) {
-            std::cout << "Entered Data: ";
-            for (const auto& field : userInput) std::cout << field << " ";
-            std::cout << std::endl;
-        }
-    }
-    else if (event.type == sf::Event::MouseButtonPressed) {
-        sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
-
-        int yOffset = 60;  // ✅ Start from the top
-
-        for (std::size_t i = 0; i < fieldLabels.size(); ++i) {
-            sf::FloatRect inputBoxBounds(260, yOffset - 5, 250, 35);  // ✅ Uses dynamic positioning
-            if (inputBoxBounds.contains(mousePos)) {
-                activeField = i;
-                return;
-            }
-            yOffset += 50;  // ✅ Move down dynamically (same logic as `render()`)
-        }
-
-
-        // ✅ Handle Time Selection Button Click          
-        float timeButtonX = 10;
-               
-        for (int i = 0; i < 5; ++i) {           
-            sf::FloatRect timeButtonBounds(timeButtonX, yOffset, 100, 30);
-            if (timeButtonBounds.contains(mousePos)) {                
-                timeSelection[i].second = !timeSelection[i].second;
-                //Update the "Preferred Time" input box
-                userInput[7] = "";
-                for (int i = 0; i < 5; ++i) {
-                    if (timeSelection[i].second) {
-                        if (!userInput[7].empty()) userInput[7] += "| ";  // ✅ Separate multiple selections
-                        userInput[7] += timeSelection[i].first;
-                    }
-                }
-
-                return;
-            }
-            timeButtonX += 110;  // Move to next button
-            
-            
-        }
-    
-
-        // ✅ Handle "Done" Button Click
-        if (mousePos.x >= 20 && mousePos.x <= 160 && mousePos.y >= 550 && mousePos.y <= 590) {
-            std::cout << "Flight Booking Confirmed!\n";
-            openConfirmationWindow();  // ✅ Open confirmation
-            return;
-        }
-
-        // ✅ Handle "Cancel" Button Click
-        if (mousePos.x >= 200 && mousePos.x <= 340 && mousePos.y >= 550 && mousePos.y <= 590) {
-            std::cout << "Cancelled Flight Booking\n";
-            formManager->closeForm();
-            return;
-        }
-    }
-
-}
+//void FlightBookingForm::handleInput(sf::Event event) {
+//    if (event.type == sf::Event::TextEntered) {
+//        if (event.text.unicode == '\b' && !userInput[activeField].empty()) { 
+//            userInput[activeField].pop_back();  // ✅ Handle Backspace
+//        } 
+//        else if (event.text.unicode >= 32 && event.text.unicode < 128) {
+//            userInput[activeField] += static_cast<char>(event.text.unicode);  // ✅ Append typed character
+//        }
+//    } 
+//    else if (event.type == sf::Event::KeyPressed) {
+//        if (event.key.code == sf::Keyboard::Tab) {
+//            activeField = (activeField + 1) % userInput.size();  // ✅ Move to next input field
+//        }
+//        if (event.key.code == sf::Keyboard::Return) {
+//            std::cout << "Entered Data: ";
+//            for (const auto& field : userInput) std::cout << field << " ";
+//            std::cout << std::endl;
+//        }
+//    }
+//    else if (event.type == sf::Event::MouseButtonPressed) {
+//        sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
+//
+//        int yOffset = 60;  // ✅ Start from the top
+//
+//        for (std::size_t i = 0; i < fieldLabels.size(); ++i) {
+//            sf::FloatRect inputBoxBounds(260, yOffset - 5, 250, 35);  // ✅ Uses dynamic positioning
+//            if (inputBoxBounds.contains(mousePos)) {
+//                activeField = i;
+//                return;
+//            }
+//            yOffset += 50;  // ✅ Move down dynamically (same logic as `render()`)
+//        }
+//
+//
+//        // ✅ Handle Time Selection Button Click          
+//        float timeButtonX = 10;
+//               
+//        for (int i = 0; i < 5; ++i) {           
+//            sf::FloatRect timeButtonBounds(timeButtonX, yOffset, 100, 30);
+//            if (timeButtonBounds.contains(mousePos)) {                
+//                timeSelection[i].second = !timeSelection[i].second;
+//                //Update the "Preferred Time" input box
+//                userInput[7] = "";
+//                for (int i = 0; i < 5; ++i) {
+//                    if (timeSelection[i].second) {
+//                        if (!userInput[7].empty()) userInput[7] += "| ";  // ✅ Separate multiple selections
+//                        userInput[7] += timeSelection[i].first;
+//                    }
+//                }
+//
+//                return;
+//            }
+//            timeButtonX += 110;  // Move to next button
+//            
+//            
+//        }
+//    
+//		//================================================================================================
+//		// can be deleted
+//        // ✅ Handle "Done" Button Click
+//        //if (mousePos.x >= 20 && mousePos.x <= 160 && mousePos.y >= 550 && mousePos.y <= 590) {
+//        //    std::cout << "Flight Booking Confirmed!\n";
+//        //    openConfirmationWindow();  // ✅ Open confirmation
+//        //    return;
+//        //}
+//
+//        //// ✅ Handle "Cancel" Button Click
+//        //if (mousePos.x >= 200 && mousePos.x <= 340 && mousePos.y >= 550 && mousePos.y <= 590) {
+//        //    std::cout << "Cancelled Flight Booking\n";
+//        //    formManager->closeForm();
+//        //    return;
+//        //}
+//		//================================================================================================
+//    }
+//
+//}
 
 
 

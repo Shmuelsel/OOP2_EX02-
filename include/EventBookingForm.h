@@ -8,7 +8,7 @@ public:
     EventBookingForm(sf::RenderWindow& win, DialogueManager* manager);
     std::string getFormType() const override;
     void render(sf::RenderWindow& window) override;
-    void handleInput(sf::Event event) override;
+    //void handleInput(sf::Event event) override;
 private:
     void setDefaultValues() override;
     std::array<std::string, 5> SeatingTypeSelection = { "General Admission", "Front Row", "VIP Section", "Aisle Seat" };

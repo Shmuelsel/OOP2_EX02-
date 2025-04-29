@@ -10,7 +10,7 @@ public:
     CarRentalForm(sf::RenderWindow& win, DialogueManager* manager);    
     std::string getFormType() const override;
     void render(sf::RenderWindow& window) override;
-    void handleInput(sf::Event event) override;
+    //void handleInput(sf::Event event) override;
 private:
     void setDefaultValues();
     std::array<std::string, 5> carTypeSelection = { "Economy","Compact","Sedan","SUV","Luxury"};

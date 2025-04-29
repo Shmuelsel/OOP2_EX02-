@@ -112,64 +112,64 @@ void EventBookingForm::render(sf::RenderWindow& window) {
     window.draw(cancelText);
 }
 
-void EventBookingForm::handleInput(sf::Event event) {
-    if (event.type == sf::Event::TextEntered) {
-        if (event.text.unicode == '\b' && !userInput[activeField].empty()) {
-            userInput[activeField].pop_back();
-        }
-        else if (event.text.unicode >= 32 && event.text.unicode < 128) {
-            userInput[activeField] += static_cast<char>(event.text.unicode);
-        }
-    }
-    else if (event.type == sf::Event::KeyPressed) {
-        if (event.key.code == sf::Keyboard::Tab) {
-            activeField = (activeField + 1) % userInput.size();
-        }
-        if (event.key.code == sf::Keyboard::Return) {
-            std::cout << "Entered Data: ";
-            for (const auto& field : userInput) std::cout << field << " ";
-            std::cout << std::endl;
-        }
-    }
-    else if (event.type == sf::Event::MouseButtonPressed) {
-        sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
-        int yOffset = 60;
-
-        for (std::size_t i = 0; i < fieldLabels.size(); ++i) {
-            sf::FloatRect inputBoxBounds(250, yOffset - 5, 250, 35);
-            if (inputBoxBounds.contains(mousePos)) {
-                activeField = i;
-                return;
-            }
-            yOffset += 50;
-        }
-        // ✅ Handle Seating Type Button Click     
-        yOffset -= 10;    
-        float seatingButtonX = 10;
-        for (int i = 0; i < SeatingTypeSelection.size(); ++i) {
-            sf::FloatRect timeButtonBounds(seatingButtonX, yOffset, 150, 30);
-            if (timeButtonBounds.contains(mousePos)) {
-                selectedSeatingType = i;
-                //Update the "Room Type" input box
-                userInput[9] = SeatingTypeSelection[i];
-
-                return;
-            }
-            seatingButtonX += 160;  // Move to next button
-        }
-
-        yOffset += 50;
-
-        if (mousePos.x >= 20 && mousePos.x <= 160 && mousePos.y >= yOffset && mousePos.y <= yOffset + 40) {
-            std::cout << "Event Booking Confirmed!\n";
-            openConfirmationWindow();
-            return;
-        }
-
-        if (mousePos.x >= 200 && mousePos.x <= 340 && mousePos.y >= yOffset && mousePos.y <= yOffset + 40) {
-            std::cout << "Cancelled Event Booking\n";
-            formManager->closeForm();
-            return;
-        }
-    }
-}
+//void EventBookingForm::handleInput(sf::Event event) {
+//    if (event.type == sf::Event::TextEntered) {
+//        if (event.text.unicode == '\b' && !userInput[activeField].empty()) {
+//            userInput[activeField].pop_back();
+//        }
+//        else if (event.text.unicode >= 32 && event.text.unicode < 128) {
+//            userInput[activeField] += static_cast<char>(event.text.unicode);
+//        }
+//    }
+//    else if (event.type == sf::Event::KeyPressed) {
+//        if (event.key.code == sf::Keyboard::Tab) {
+//            activeField = (activeField + 1) % userInput.size();
+//        }
+//        if (event.key.code == sf::Keyboard::Return) {
+//            std::cout << "Entered Data: ";
+//            for (const auto& field : userInput) std::cout << field << " ";
+//            std::cout << std::endl;
+//        }
+//    }
+//    else if (event.type == sf::Event::MouseButtonPressed) {
+//        sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
+//        int yOffset = 60;
+//
+//        for (std::size_t i = 0; i < fieldLabels.size(); ++i) {
+//            sf::FloatRect inputBoxBounds(250, yOffset - 5, 250, 35);
+//            if (inputBoxBounds.contains(mousePos)) {
+//                activeField = i;
+//                return;
+//            }
+//            yOffset += 50;
+//        }
+//        // ✅ Handle Seating Type Button Click     
+//        yOffset -= 10;    
+//        float seatingButtonX = 10;
+//        for (int i = 0; i < SeatingTypeSelection.size(); ++i) {
+//            sf::FloatRect timeButtonBounds(seatingButtonX, yOffset, 150, 30);
+//            if (timeButtonBounds.contains(mousePos)) {
+//                selectedSeatingType = i;
+//                //Update the "Room Type" input box
+//                userInput[9] = SeatingTypeSelection[i];
+//
+//                return;
+//            }
+//            seatingButtonX += 160;  // Move to next button
+//        }
+//
+//        yOffset += 50;
+//
+//        if (mousePos.x >= 20 && mousePos.x <= 160 && mousePos.y >= yOffset && mousePos.y <= yOffset + 40) {
+//            std::cout << "Event Booking Confirmed!\n";
+//            openConfirmationWindow();
+//            return;
+//        }
+//
+//        if (mousePos.x >= 200 && mousePos.x <= 340 && mousePos.y >= yOffset && mousePos.y <= yOffset + 40) {
+//            std::cout << "Cancelled Event Booking\n";
+//            formManager->closeForm();
+//            return;
+//        }
+//    }
+//}

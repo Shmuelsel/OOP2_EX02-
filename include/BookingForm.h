@@ -5,6 +5,8 @@
 #include <vector>
 #include <string>
 #include <array>
+#include "Field.h"
+
 class DialogueManager;
 
 struct PersonalInfo {
@@ -16,25 +18,34 @@ struct PersonalInfo {
 
 class BookingForm {
 protected:
-    std::vector<std::string> fieldLabels;
-    std::vector<std::string> userInput;
-    std::size_t activeField = 0;
-    sf::Clock cursorTimer;
-    bool showCursor = true;
+	std::vector<std::string> fieldLabels;//need to define the labels for the fields
+	std::vector<std::string> userInput;  //need to define the input fields
+    PersonalInfo personalInfo;
 
     sf::RenderWindow& window;
     DialogueManager* formManager;
-    PersonalInfo personalInfo;
+    //need to add a font
+    std::vector<std::unique_ptr<FieldBase>> fields;
+	
+    std::size_t activeField = 0;
+    sf::Clock cursorTimer;
 
-    virtual void setDefaultValues()=0 ;
-    void openConfirmationWindow();
+    virtual void setDefaultValues() = 0;
+
+    void renderCommon(sf::RenderWindow& window);
+    bool handleCommonInput(sf::Event event);
+    bool showCursor = true;
+
+    
+    
 
 public:
-    BookingForm(sf::RenderWindow& win, DialogueManager* manager);
+    BookingForm(sf::RenderWindow& win, DialogueManager* manager);//need to add a font
     virtual ~BookingForm() = default;
-    virtual std::string getFormType() const = 0;
     virtual void render(sf::RenderWindow& window) = 0;
-    virtual void handleInput(sf::Event event) = 0;
+    void handleInput(sf::Event event);
+    virtual std::string getFormType() const = 0;
+    void openConfirmationWindow();
 };
 
 #endif // BOOKINGFORM_H

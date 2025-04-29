@@ -140,93 +140,93 @@ void TrainBookingForm::render(sf::RenderWindow& window) {
     window.draw(cancelText);
 }
 
-void TrainBookingForm::handleInput(sf::Event event) {
-    if (event.type == sf::Event::TextEntered) {
-        if (event.text.unicode == '\b' && !userInput[activeField].empty()) {
-            userInput[activeField].pop_back();
-        }
-        else if (event.text.unicode >= 32 && event.text.unicode < 128) {
-            userInput[activeField] += static_cast<char>(event.text.unicode);
-        }
-    }
-    else if (event.type == sf::Event::KeyPressed) {
-        if (event.key.code == sf::Keyboard::Tab) {
-            activeField = (activeField + 1) % userInput.size();
-        }
-        if (event.key.code == sf::Keyboard::Return) {
-            std::cout << "Entered Data: ";
-            for (const auto& field : userInput) std::cout << field << " ";
-            std::cout << std::endl;
-        }
-    }
-    else if (event.type == sf::Event::MouseButtonPressed) {
-        sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
-        int yOffset = 60, timeOffset = 0, specialOffset = 0;
-        for (std::size_t i = 0; i < fieldLabels.size(); ++i) {
-            sf::FloatRect inputBoxBounds(240, yOffset - 5, 250, 35);
-            if (inputBoxBounds.contains(mousePos)) {
-                activeField = i;
-                return;
-            }
-            if (i ==8)            
-                timeOffset= yOffset +=40;
-            if (i==9)
-                specialOffset = yOffset +=40;
-            yOffset += 50;
-        }
-        // ✅ Handle Time Selection Button Click          
-        float timeButtonX = 10;
-
-		for (int i = 0; i < timeSelection.size(); ++i) {
-            sf::FloatRect timeButtonBounds(timeButtonX, timeOffset, 100, 30);
-            if (timeButtonBounds.contains(mousePos)) {
-                timeSelection[i].second = !timeSelection[i].second;
-                //Update the "Preferred Time" input box
-                userInput[8] = "";
-                for (int i = 0; i < timeSelection.size(); ++i) {
-                    if (timeSelection[i].second) {
-                        if (!userInput[8].empty()) userInput[8] += "| ";  // ✅ Separate multiple selections
-                        userInput[8] += timeSelection[i].first;
-                    }
-                }
-
-                return;
-            }
-            timeButtonX += 110;  // Move to next button
-        }
-        // ✅ Handle Special Selection Botton click
-        float sButtonX = 10;
-
-		for (int i = 0; i < specialSelection.size(); ++i) {
-            sf::FloatRect specialSelectionBounds(sButtonX, specialOffset, 150, 30);
-            if (specialSelectionBounds.contains(mousePos)) {
-                specialSelection[i].second = !specialSelection[i].second;
-                //Update the "Preferred Time" input box
-                userInput[9] = "";
-                for (int i = 0; i < specialSelection.size(); ++i) {
-                    if (specialSelection[i].second) {
-                        if (!userInput[9].empty()) userInput[9] += "| ";  // ✅ Separate multiple selections
-                        userInput[9] += specialSelection[i].first;
-                    }
-                }
-
-                return;
-            }
-            sButtonX += 160;  // Move to next button
-            
-        }
-        yOffset += 10;
-
-        if (mousePos.x >= 20 && mousePos.x <= 160 && mousePos.y >= yOffset && mousePos.y <= yOffset + 40) {
-            std::cout << "Train Booking Confirmed!\n";
-            openConfirmationWindow();
-            return;
-        }
-
-        if (mousePos.x >= 200 && mousePos.x <= 340 && mousePos.y >= yOffset && mousePos.y <= yOffset + 40) {
-            std::cout << "Cancelled Train Booking\n";
-            formManager->closeForm();
-            return;
-        }
-    }
-}
+//void TrainBookingForm::handleInput(sf::Event event) {
+//    if (event.type == sf::Event::TextEntered) {
+//        if (event.text.unicode == '\b' && !userInput[activeField].empty()) {
+//            userInput[activeField].pop_back();
+//        }
+//        else if (event.text.unicode >= 32 && event.text.unicode < 128) {
+//            userInput[activeField] += static_cast<char>(event.text.unicode);
+//        }
+//    }
+//    else if (event.type == sf::Event::KeyPressed) {
+//        if (event.key.code == sf::Keyboard::Tab) {
+//            activeField = (activeField + 1) % userInput.size();
+//        }
+//        if (event.key.code == sf::Keyboard::Return) {
+//            std::cout << "Entered Data: ";
+//            for (const auto& field : userInput) std::cout << field << " ";
+//            std::cout << std::endl;
+//        }
+//    }
+//    else if (event.type == sf::Event::MouseButtonPressed) {
+//        sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
+//        int yOffset = 60, timeOffset = 0, specialOffset = 0;
+//        for (std::size_t i = 0; i < fieldLabels.size(); ++i) {
+//            sf::FloatRect inputBoxBounds(240, yOffset - 5, 250, 35);
+//            if (inputBoxBounds.contains(mousePos)) {
+//                activeField = i;
+//                return;
+//            }
+//            if (i ==8)            
+//                timeOffset= yOffset +=40;
+//            if (i==9)
+//                specialOffset = yOffset +=40;
+//            yOffset += 50;
+//        }
+//        // ✅ Handle Time Selection Button Click          
+//        float timeButtonX = 10;
+//
+//		for (int i = 0; i < timeSelection.size(); ++i) {
+//            sf::FloatRect timeButtonBounds(timeButtonX, timeOffset, 100, 30);
+//            if (timeButtonBounds.contains(mousePos)) {
+//                timeSelection[i].second = !timeSelection[i].second;
+//                //Update the "Preferred Time" input box
+//                userInput[8] = "";
+//                for (int i = 0; i < timeSelection.size(); ++i) {
+//                    if (timeSelection[i].second) {
+//                        if (!userInput[8].empty()) userInput[8] += "| ";  // ✅ Separate multiple selections
+//                        userInput[8] += timeSelection[i].first;
+//                    }
+//                }
+//
+//                return;
+//            }
+//            timeButtonX += 110;  // Move to next button
+//        }
+//        // ✅ Handle Special Selection Botton click
+//        float sButtonX = 10;
+//
+//		for (int i = 0; i < specialSelection.size(); ++i) {
+//            sf::FloatRect specialSelectionBounds(sButtonX, specialOffset, 150, 30);
+//            if (specialSelectionBounds.contains(mousePos)) {
+//                specialSelection[i].second = !specialSelection[i].second;
+//                //Update the "Preferred Time" input box
+//                userInput[9] = "";
+//                for (int i = 0; i < specialSelection.size(); ++i) {
+//                    if (specialSelection[i].second) {
+//                        if (!userInput[9].empty()) userInput[9] += "| ";  // ✅ Separate multiple selections
+//                        userInput[9] += specialSelection[i].first;
+//                    }
+//                }
+//
+//                return;
+//            }
+//            sButtonX += 160;  // Move to next button
+//            
+//        }
+//        yOffset += 10;
+//
+//        if (mousePos.x >= 20 && mousePos.x <= 160 && mousePos.y >= yOffset && mousePos.y <= yOffset + 40) {
+//            std::cout << "Train Booking Confirmed!\n";
+//            openConfirmationWindow();
+//            return;
+//        }
+//
+//        if (mousePos.x >= 200 && mousePos.x <= 340 && mousePos.y >= yOffset && mousePos.y <= yOffset + 40) {
+//            std::cout << "Cancelled Train Booking\n";
+//            formManager->closeForm();
+//            return;
+//        }
+//    }
+//}

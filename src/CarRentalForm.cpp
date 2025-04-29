@@ -114,65 +114,65 @@ void CarRentalForm::render(sf::RenderWindow& window) {
     window.draw(cancelText);
 }
 
-void CarRentalForm::handleInput(sf::Event event) {
-    if (event.type == sf::Event::TextEntered) {
-        if (event.text.unicode == '\b' && !userInput[activeField].empty()) {
-            userInput[activeField].pop_back();
-        }
-        else if (event.text.unicode >= 32 && event.text.unicode < 128) {
-            userInput[activeField] += static_cast<char>(event.text.unicode);
-        }
-    }
-    else if (event.type == sf::Event::KeyPressed) {
-        if (event.key.code == sf::Keyboard::Tab) {
-            activeField = (activeField + 1) % userInput.size();
-        }
-        if (event.key.code == sf::Keyboard::Return) {
-            std::cout << "Entered Data: ";
-            for (const auto& field : userInput) std::cout << field << " ";
-            std::cout << std::endl;
-        }
-    }
-    else if (event.type == sf::Event::MouseButtonPressed) {
-        sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
-        int yOffset = 60;
-
-        for (std::size_t i = 0; i < fieldLabels.size(); ++i) {
-            sf::FloatRect inputBoxBounds(240, yOffset - 5, 250, 35);
-            if (inputBoxBounds.contains(mousePos)) {
-                activeField = i;
-                return;
-            }
-            yOffset += 50;
-        }
-        yOffset -= 10;
-        // ✅ Handle Car Type Button Click          
-        float carTypeButtonX = 20;
-        for (int i = 0; i < carTypeSelection.size(); ++i) {
-            sf::FloatRect timeButtonBounds(carTypeButtonX, yOffset, 90, 30);
-            if (timeButtonBounds.contains(mousePos)) {
-                selectedCarType = i;
-                //Update the "Car Type" input box
-                userInput[9] = carTypeSelection[i];
-
-                return;
-            }
-            carTypeButtonX += 105;  // Move to next button
-        }
-         yOffset += 40;
-
-        if (mousePos.x >= 20 && mousePos.x <= 160 && mousePos.y >= yOffset && mousePos.y <= yOffset + 40) {
-            std::cout << "Car Rental Confirmed!\n";
-            openConfirmationWindow();
-            return;
-        }
-
-        if (mousePos.x >= 200 && mousePos.x <= 340 && mousePos.y >= yOffset && mousePos.y <= yOffset + 40) {
-            std::cout << "Cancelled Car Rental\n";
-            formManager->closeForm();
-            return;
-        }
-    }
-}
+//void CarRentalForm::handleInput(sf::Event event) {
+//    if (event.type == sf::Event::TextEntered) {
+//        if (event.text.unicode == '\b' && !userInput[activeField].empty()) {
+//            userInput[activeField].pop_back();
+//        }
+//        else if (event.text.unicode >= 32 && event.text.unicode < 128) {
+//            userInput[activeField] += static_cast<char>(event.text.unicode);
+//        }
+//    }
+//    else if (event.type == sf::Event::KeyPressed) {
+//        if (event.key.code == sf::Keyboard::Tab) {
+//            activeField = (activeField + 1) % userInput.size();
+//        }
+//        if (event.key.code == sf::Keyboard::Return) {
+//            std::cout << "Entered Data: ";
+//            for (const auto& field : userInput) std::cout << field << " ";
+//            std::cout << std::endl;
+//        }
+//    }
+//    else if (event.type == sf::Event::MouseButtonPressed) {
+//        sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
+//        int yOffset = 60;
+//
+//        for (std::size_t i = 0; i < fieldLabels.size(); ++i) {
+//            sf::FloatRect inputBoxBounds(240, yOffset - 5, 250, 35);
+//            if (inputBoxBounds.contains(mousePos)) {
+//                activeField = i;
+//                return;
+//            }
+//            yOffset += 50;
+//        }
+//        yOffset -= 10;
+//        // ✅ Handle Car Type Button Click          
+//        float carTypeButtonX = 20;
+//        for (int i = 0; i < carTypeSelection.size(); ++i) {
+//            sf::FloatRect timeButtonBounds(carTypeButtonX, yOffset, 90, 30);
+//            if (timeButtonBounds.contains(mousePos)) {
+//                selectedCarType = i;
+//                //Update the "Car Type" input box
+//                userInput[9] = carTypeSelection[i];
+//
+//                return;
+//            }
+//            carTypeButtonX += 105;  // Move to next button
+//        }
+//         yOffset += 40;
+//
+//        if (mousePos.x >= 20 && mousePos.x <= 160 && mousePos.y >= yOffset && mousePos.y <= yOffset + 40) {
+//            std::cout << "Car Rental Confirmed!\n";
+//            openConfirmationWindow();
+//            return;
+//        }
+//
+//        if (mousePos.x >= 200 && mousePos.x <= 340 && mousePos.y >= yOffset && mousePos.y <= yOffset + 40) {
+//            std::cout << "Cancelled Car Rental\n";
+//            formManager->closeForm();
+//            return;
+//        }
+//    }
+//}
 
 
