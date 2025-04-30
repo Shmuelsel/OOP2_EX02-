@@ -14,7 +14,7 @@ TrainBookingForm::TrainBookingForm(sf::RenderWindow& win, DialogueManager* manag
     setDefaultValues();
 }
 
-void TrainBookingForm::setDefaultValues() {
+std::string TrainBookingForm::setDefaultValues() {
     time_t now = time(0);
     tm ltm;
     localtime_s(&ltm, &now);  // ✅ Safe alternative to localtime()
@@ -24,6 +24,7 @@ void TrainBookingForm::setDefaultValues() {
         std::to_string(ltm.tm_mday);
 	userInput[8] = "Don't Care";
     userInput[9] = "None";
+	return "0";
 }
 
 std::string TrainBookingForm::getFormType() const {
@@ -140,6 +141,9 @@ void TrainBookingForm::render(sf::RenderWindow& window) {
     window.draw(cancelText);
 }
 
+const std::vector<std::unique_ptr<FieldBase>>& TrainBookingForm::getFields() const{
+    return fields; // מחזיר רפרנס לווקטור
+}
 //void TrainBookingForm::handleInput(sf::Event event) {
 //    if (event.type == sf::Event::TextEntered) {
 //        if (event.text.unicode == '\b' && !userInput[activeField].empty()) {

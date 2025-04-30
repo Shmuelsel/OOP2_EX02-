@@ -8,7 +8,7 @@
 BookingForm::BookingForm(sf::RenderWindow& win, DialogueManager* manager) :window(win), formManager(manager) {
     //fieldLabels = Config::fieldLabelsBase;  // ✅ Add common fields
 	
-    fields.push_back(std::make_unique<Field<std::string>>("Namerr:"));
+    fields.push_back(std::make_unique<Field<std::string>>("Name:"));
     fields.push_back(std::make_unique<Field<std::string>>("ID:"));
     fields.push_back(std::make_unique<Field<std::string>>("Address:"));
     fields.push_back(std::make_unique<Field<std::string>>("Email:"));
@@ -161,4 +161,12 @@ void BookingForm::handleInput(sf::Event event) {
         //}
                 //================================================================================================
     }
+}
+
+void BookingForm::renderCommon(sf::RenderWindow& window) {
+	sf::Font font;
+	font.loadFromFile("C:/Windows/Fonts/arialbd.ttf");
+	for (std::size_t i = 0; i < fields.size(); ++i) {
+		fields[i]->render(window, font, 260, 60 + i * 50, i == activeField, showCursor);
+	}
 }

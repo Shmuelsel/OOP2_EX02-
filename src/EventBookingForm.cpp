@@ -14,7 +14,7 @@ EventBookingForm::EventBookingForm(sf::RenderWindow& win, DialogueManager* manag
     setDefaultValues();
 }
 
-void EventBookingForm::setDefaultValues() {
+std::string EventBookingForm::setDefaultValues() {
     time_t now = time(0);
     tm ltm;
     localtime_s(&ltm, &now);  // ✅ Safe alternative to localtime()
@@ -23,6 +23,7 @@ void EventBookingForm::setDefaultValues() {
         std::to_string(1 + ltm.tm_mon) + "-" +
         std::to_string(ltm.tm_mday);
     userInput[9] = "General Admission";
+	return "0";
 }
 
 std::string EventBookingForm::getFormType() const {
@@ -110,6 +111,10 @@ void EventBookingForm::render(sf::RenderWindow& window) {
     cancelText.setFillColor(sf::Color::White);
     cancelText.setPosition(230, yOffset + 10);
     window.draw(cancelText);
+}
+
+const std::vector<std::unique_ptr<FieldBase>>& EventBookingForm::getFields() const{
+    return fields; // מחזיר רפרנס לווקטור
 }
 
 //void EventBookingForm::handleInput(sf::Event event) {

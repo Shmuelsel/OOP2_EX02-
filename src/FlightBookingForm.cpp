@@ -10,24 +10,21 @@ FlightBookingForm::FlightBookingForm(sf::RenderWindow& win, DialogueManager* man
 	
     fields.push_back(std::make_unique<Field<std::string>>("Departure Airport:"));
     fields.push_back(std::make_unique<Field<std::string>>("Arrival Airport:"));
-    fields.push_back(std::make_unique<Field<std::string>>("Departure Date:"));
-    fields.push_back(std::make_unique<Field<std::vector<std::string>>>("Preferred Time:", std::vector<std::string>{"Morning", "Afternoon", "Evening", "Don't Care"}));
+    fields.push_back(std::make_unique<Field<std::string>>("Departure Date:", setDefaultValues()));
+    fields.push_back(std::make_unique<Field<std::string>>("Preferred Time:", "Don't Care"));
 
-    userInput.resize(fields.size(), "");  // Resize to include all fields
-    setDefaultValues();
+    //userInput.resize(fields.size(), "");  // Resize to include all fields
+    //setDefaultValues();
 }
     
 
-void FlightBookingForm::setDefaultValues() {
+std::string FlightBookingForm::setDefaultValues() {
     time_t now = time(0);
     tm ltm;
     localtime_s(&ltm, &now);  // ✅ Safe alternative to localtime()
-
-    userInput[6] = std::to_string(1900 + ltm.tm_year) + "-" +
+    return std::to_string(1900 + ltm.tm_year) + "-" +
         std::to_string(1 + ltm.tm_mon) + "-" +
         std::to_string(ltm.tm_mday);
-
-	userInput[7] = "Don't Care";  // ✅ Default time selection
 }
 
 std::string FlightBookingForm::getFormType() const {
@@ -64,7 +61,7 @@ void FlightBookingForm::render(sf::RenderWindow& window) {
         inputBox.setOutlineColor(i == activeField ? sf::Color(0, 120, 255) : sf::Color(160, 160, 160));
         window.draw(inputBox);
 
-        std::string displayText = userInput[i];
+        std::string displayText = fields[i]->getValueAsString();
         if (i == activeField && cursorVisible) {
             displayText += "|";
         }
@@ -119,6 +116,10 @@ void FlightBookingForm::render(sf::RenderWindow& window) {
     cancelText.setPosition(230, 560);
     window.draw(cancelText);
 
+}
+
+const std::vector<std::unique_ptr<FieldBase>>& FlightBookingForm::getFields() const{
+    return fields; // מחזיר רפרנס לווקטור
 }
 
 

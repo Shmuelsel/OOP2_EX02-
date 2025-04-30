@@ -8,9 +8,10 @@ public:
     TrainBookingForm(sf::RenderWindow& win, DialogueManager* manager);
     std::string getFormType() const override;
     void render(sf::RenderWindow& window) override;
+	const std::vector<std::unique_ptr<FieldBase>>& getFields() const override;
     //void handleInput(sf::Event event) override;
 private:
-    void setDefaultValues() override; 
+    std::string setDefaultValues() override;
     std::array<std::pair<std::string, bool>, 5> timeSelection = {
             std::make_pair("Morning", false),
             std::make_pair("Noon", false),

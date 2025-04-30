@@ -30,9 +30,9 @@ protected:
     std::size_t activeField = 0;
     sf::Clock cursorTimer;
 
-    virtual void setDefaultValues() = 0;
+    virtual std::string setDefaultValues() = 0;
 
-    void renderCommon(sf::RenderWindow& window);
+    //void renderCommon(sf::RenderWindow& window);
     bool handleCommonInput(sf::Event event);
     bool showCursor = true;
 
@@ -46,6 +46,8 @@ public:
     void handleInput(sf::Event event);
     virtual std::string getFormType() const = 0;
     void openConfirmationWindow();
+    void renderCommon(sf::RenderWindow& window);
+    virtual const std::vector<std::unique_ptr<FieldBase>>& getFields() const = 0;
 };
 
 #endif // BOOKINGFORM_H

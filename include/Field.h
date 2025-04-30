@@ -37,11 +37,12 @@ public:
     void render(sf::RenderWindow& window, const sf::Font& font, float x, float y, bool isActive, bool cursorVisible) const override {
         sf::Text labelText(label, font, 18);
         labelText.setFillColor(sf::Color(60, 60, 60));
-        labelText.setPosition(x, y);
+		labelText.setStyle(sf::Text::Bold);
+        labelText.setPosition(20, y);
         window.draw(labelText);
 
-        sf::RectangleShape inputBox(sf::Vector2f(350, 35));
-        inputBox.setPosition(x + 220, y - 5);
+        sf::RectangleShape inputBox(sf::Vector2f(250, 35));
+        inputBox.setPosition(240, y - 5);
         inputBox.setFillColor(sf::Color::White);
         inputBox.setOutlineThickness(2);
         inputBox.setOutlineColor(isActive ? sf::Color(0, 120, 255) : sf::Color(160, 160, 160));
@@ -52,7 +53,7 @@ public:
 
         sf::Text inputText(displayText, font, 16);
         inputText.setFillColor(sf::Color::Black);
-        inputText.setPosition(x + 225, y);
+        inputText.setPosition(245, y);
         window.draw(inputText);
     }
 

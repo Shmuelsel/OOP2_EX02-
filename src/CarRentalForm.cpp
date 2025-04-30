@@ -16,7 +16,7 @@ CarRentalForm::CarRentalForm(sf::RenderWindow& win, DialogueManager* manager)
     setDefaultValues();
 }
 
-void CarRentalForm::setDefaultValues() {
+std::string CarRentalForm::setDefaultValues() {
     time_t now = time(0);
     tm ltm;
     localtime_s(&ltm, &now);  
@@ -25,6 +25,7 @@ void CarRentalForm::setDefaultValues() {
         std::to_string(1 + ltm.tm_mon) + "-" +
         std::to_string(ltm.tm_mday);
 	userInput[9] = "Economy";
+    return "0";
 }
 
 std::string CarRentalForm::getFormType() const {
@@ -112,6 +113,10 @@ void CarRentalForm::render(sf::RenderWindow& window) {
     cancelText.setFillColor(sf::Color::White);
     cancelText.setPosition(230, buttonY + 10);
     window.draw(cancelText);
+}
+
+const std::vector<std::unique_ptr<FieldBase>>& CarRentalForm::getFields() const {
+    return fields; // מחזיר רפרנס לווקטור
 }
 
 //void CarRentalForm::handleInput(sf::Event event) {

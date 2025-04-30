@@ -10,9 +10,10 @@ public:
     CarRentalForm(sf::RenderWindow& win, DialogueManager* manager);    
     std::string getFormType() const override;
     void render(sf::RenderWindow& window) override;
+	const std::vector<std::unique_ptr<FieldBase>>& getFields() const override;
     //void handleInput(sf::Event event) override;
 private:
-    void setDefaultValues();
+    std::string setDefaultValues();
     std::array<std::string, 5> carTypeSelection = { "Economy","Compact","Sedan","SUV","Luxury"};
     int selectedCarType = 0;
 };
