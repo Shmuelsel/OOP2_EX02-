@@ -5,7 +5,7 @@
 #include "config.h"
 
 FlightBookingForm::FlightBookingForm(sf::RenderWindow& win, DialogueManager* manager)
-    : BookingForm(win,manager) {  // ✅ Calls base constructor
+    : BookingForm(win, manager) {  // ✅ Calls base constructor
     fieldLabels.insert(fieldLabels.end(), Config::fieldLabelsFlight.begin(), Config::fieldLabelsFlight.end());
 	
     fields.push_back(std::make_unique<Field<std::string>>("Departure Airport:"));
@@ -28,54 +28,15 @@ std::string FlightBookingForm::setDefaultValues() {
 }
 
 std::string FlightBookingForm::getFormType() const {
-    return "Flight Booking";
+    return "Flight Booking Form";
 }
 
 void FlightBookingForm::render(sf::RenderWindow& window) {
     sf::Font font;
     font.loadFromFile("C:/Windows/Fonts/arialbd.ttf");
-      
-    window.clear(sf::Color(235, 235, 235));
-
-    // ✅ Title
-    sf::Text title("Flight Booking Form", font, 26);
-    title.setFillColor(sf::Color(20, 20, 20));
-    title.setStyle(sf::Text::Bold);
-    title.setPosition(20, 10);
-    window.draw(title);
-
-    bool cursorVisible = (cursorTimer.getElapsedTime().asMilliseconds() % 1000 < 500);
-
-    // ✅ Loop through form fields and render
+    //✅ Render input fields dynamically
     int yOffset = 60;
-    for (std::size_t i = 0; i < fields.size(); ++i) {
-        sf::Text label(fields[i]->getLabel(), font, 18);
-        label.setFillColor(sf::Color(60, 60, 60));
-        label.setPosition(20, yOffset);
-        window.draw(label);
-
-        sf::RectangleShape inputBox(sf::Vector2f(350, 35));
-        inputBox.setPosition(240, yOffset - 5);
-        inputBox.setFillColor(sf::Color::White);
-        inputBox.setOutlineThickness(2);
-        inputBox.setOutlineColor(i == activeField ? sf::Color(0, 120, 255) : sf::Color(160, 160, 160));
-        window.draw(inputBox);
-
-        std::string displayText = fields[i]->getValueAsString();
-        if (i == activeField && cursorVisible) {
-            displayText += "|";
-        }
-
-        sf::Text inputText(displayText, font, 16);
-        inputText.setFillColor(sf::Color::Black);
-        inputText.setPosition(245, yOffset);
-        window.draw(inputText);  
-
-        yOffset += 50;
-    }
-
-    // ✅ Time Selection Buttons
-    //   
+    // ✅ Time Selection Buttons 
     float timeButtonX = 10;
     for (std::size_t i = 0; i < timeSelection.size(); ++i) {
         sf::RectangleShape timeButton(sf::Vector2f(100, 30));
@@ -92,36 +53,11 @@ void FlightBookingForm::render(sf::RenderWindow& window) {
 
         timeButtonX += 110;  // ✅ Increased spacing between buttons
     }
-
-
-    // ✅ "Done" Button
-    sf::RectangleShape submitButton(sf::Vector2f(140, 40));
-    submitButton.setPosition(20, 550);
-    submitButton.setFillColor(sf::Color(50, 150, 50));  // ✅ Green color
-    window.draw(submitButton);
-
-    sf::Text submitText("DONE", font, 20);
-    submitText.setFillColor(sf::Color::White);
-    submitText.setPosition(50, 560);
-    window.draw(submitText);
-
-    // ✅ "Cancel" Button
-    sf::RectangleShape cancelButton(sf::Vector2f(140, 40));
-    cancelButton.setPosition(200, 550);
-    cancelButton.setFillColor(sf::Color(180, 0, 0));  // ✅ Red color
-    window.draw(cancelButton);
-
-    sf::Text cancelText("CANCEL", font, 20);
-    cancelText.setFillColor(sf::Color::White);
-    cancelText.setPosition(230, 560);
-    window.draw(cancelText);
-
 }
 
 const std::vector<std::unique_ptr<FieldBase>>& FlightBookingForm::getFields() const{
     return fields; // מחזיר רפרנס לווקטור
 }
-
 
 //void FlightBookingForm::handleInput(sf::Event event) {
 //    if (event.type == sf::Event::TextEntered) {

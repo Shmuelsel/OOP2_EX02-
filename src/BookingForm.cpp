@@ -4,6 +4,7 @@
 #include <ctime>  // For getting current date
 #include "config.h"
 #include "Field.h"
+#include "Button.h"
 
 BookingForm::BookingForm(sf::RenderWindow& win, DialogueManager* manager) :window(win), formManager(manager) {
     //fieldLabels = Config::fieldLabelsBase;  // ✅ Add common fields
@@ -13,6 +14,8 @@ BookingForm::BookingForm(sf::RenderWindow& win, DialogueManager* manager) :windo
     fields.push_back(std::make_unique<Field<std::string>>("Address:"));
     fields.push_back(std::make_unique<Field<std::string>>("Email:"));
 
+	buttons.push_back(Button("Done", 20, 570, 140, 40));
+	buttons.push_back(Button("Cancel", 200, 570, 140, 40));
     //userInput.resize(fields.size(), "");  // Initialize input fields
 }
 
@@ -63,29 +66,31 @@ void BookingForm::openConfirmationWindow() {
         details.setPosition(50, 80);
         confirmWindow.draw(details);
 
+
         // ✅ Approve Button
-        sf::RectangleShape approveButton(sf::Vector2f(120, 40));
-        approveButton.setPosition(100, 300);
-        approveButton.setFillColor(sf::Color(50, 150, 50));
-        confirmWindow.draw(approveButton);
+        //sf::RectangleShape approveButton(sf::Vector2f(120, 40));
+        //approveButton.setPosition(100, 300);
+        //approveButton.setFillColor(sf::Color(50, 150, 50));
+        //confirmWindow.draw(approveButton);
 
-        sf::Text approveText("APPROVE", font, 18);
-        approveText.setFillColor(sf::Color::White);
-        approveText.setPosition(118, 310);
-        confirmWindow.draw(approveText);
+        //sf::Text approveText("APPROVE", font, 18);
+        //approveText.setFillColor(sf::Color::White);
+        //approveText.setPosition(118, 310);
+        //confirmWindow.draw(approveText);
 
-        // ✅ Cancel Button
-        sf::RectangleShape cancelButton(sf::Vector2f(120, 40));
-        cancelButton.setPosition(280, 300);
-        cancelButton.setFillColor(sf::Color(180, 0, 0));
-        confirmWindow.draw(cancelButton);
+        //// ✅ Cancel Button
+        //sf::RectangleShape cancelButton(sf::Vector2f(120, 40));
+        //cancelButton.setPosition(280, 300);
+        //cancelButton.setFillColor(sf::Color(180, 0, 0));
+        //confirmWindow.draw(cancelButton);
 
-        sf::Text cancelText("CANCEL", font, 18);
-        cancelText.setFillColor(sf::Color::White);
-        cancelText.setPosition(305, 310);
-        confirmWindow.draw(cancelText);
+        //sf::Text cancelText("CANCEL", font, 18);
+        //cancelText.setFillColor(sf::Color::White);
+        //cancelText.setPosition(305, 310);
+        //confirmWindow.draw(cancelText);
 
-        confirmWindow.display();
+        //confirmWindow.display();
+		
     }
 
     if (approved) {
@@ -99,7 +104,7 @@ void BookingForm::openConfirmationWindow() {
 void BookingForm::handleInput(sf::Event event) {
     if (event.type == sf::Event::TextEntered) {
         if (event.text.unicode == '\b' && !fields[activeField]->getValueAsString().empty()) {
-            fields[activeField]->getValueAsString().pop_back();
+            fields[activeField]->getValueAsString();
         }
         else if (event.text.unicode >= 32 && event.text.unicode < 128) {
             fields[activeField]->getValueAsString() += static_cast<char>(event.text.unicode);
@@ -166,7 +171,22 @@ void BookingForm::handleInput(sf::Event event) {
 void BookingForm::renderCommon(sf::RenderWindow& window) {
 	sf::Font font;
 	font.loadFromFile("C:/Windows/Fonts/arialbd.ttf");
+
+    sf::Text title(getFormType(), font, 26);
+    title.setFillColor(sf::Color(20, 20, 20));
+    title.setStyle(sf::Text::Bold);
+    title.setPosition(20, 10);
+    window.draw(title);
+
+    bool cursorVisible = (cursorTimer.getElapsedTime().asMilliseconds() % 1000 < 500);
+
 	for (std::size_t i = 0; i < fields.size(); ++i) {
 		fields[i]->render(window, font, 260, 60 + i * 50, i == activeField, showCursor);
 	}
+
+	for (auto& button : buttons) {
+		button.render(window, font);
+	}
 }
+
+

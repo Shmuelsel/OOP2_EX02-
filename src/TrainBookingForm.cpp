@@ -28,7 +28,7 @@ std::string TrainBookingForm::setDefaultValues() {
 }
 
 std::string TrainBookingForm::getFormType() const {
-    return "Train Booking";
+    return "Train Booking Form";
 }
 
 void TrainBookingForm::render(sf::RenderWindow& window) {

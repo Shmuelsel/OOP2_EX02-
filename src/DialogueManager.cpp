@@ -43,17 +43,17 @@ void DialogueManager::handleFormEvents() {
         }
 
         if (activeForm) {  // ✅ Check again before accessing
-            for (auto &field : activeForm->getFields()) {
+            /*for (auto &field : activeForm->getFields()) {
 				field->handleInput(event);
-            }
+            }*/
             activeForm->handleInput(event);
         }
     }
 
     if (activeForm) {  // ✅ Prevent access if deleted
         formWindow.clear(sf::Color::White);
-		activeForm->render(formWindow);
-        //activeForm->renderCommon(formWindow);
+		//activeForm->render(formWindow);
+        activeForm->renderCommon(formWindow);
         formWindow.display();
     }
 }

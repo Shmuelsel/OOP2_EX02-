@@ -6,6 +6,7 @@
 #include <string>
 #include <array>
 #include "Field.h"
+#include "Button.h"
 
 class DialogueManager;
 
@@ -35,8 +36,7 @@ protected:
     //void renderCommon(sf::RenderWindow& window);
     bool handleCommonInput(sf::Event event);
     bool showCursor = true;
-
-    
+	std::vector<Button> buttons;
     
 
 public:

@@ -15,7 +15,9 @@ public:
     virtual void handleInput(sf::Event event) = 0;
     virtual std::string getValueAsString() const = 0;
     virtual std::string getLabel() const = 0;
+	virtual void setValueFromString(const std::string& str) = 0;
     virtual std::vector<std::string> validate() const = 0;
+
 };
 
 template <typename T>
@@ -115,6 +117,10 @@ public:
         }
         return errors;
     }
+
+	void setValue(const T& newValue) {
+		value = newValue;
+	}
 };
 
 // Specialization עבור שדה בחירה מרובה (כמו Preferred Time)
@@ -216,6 +222,17 @@ public:
         }
         return errors;
     }
+
+	void setValue(const std::vector<std::string>& newValue) {
+		value = newValue;
+		selected = std::vector<bool>(options.size(), false);
+		for (const auto& val : newValue) {
+			auto it = std::find(options.begin(), options.end(), val);
+			if (it != options.end()) {
+				selected[std::distance(options.begin(), it)] = true;
+			}
+		}
+	}
 };
 
 #endif
