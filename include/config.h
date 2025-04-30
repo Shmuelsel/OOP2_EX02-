@@ -4,6 +4,7 @@
 #include <memory>
 #include "Field.h"
 
+
 namespace Config {
     extern std::vector<std::string> fieldLabelsBase;
     extern std::vector<std::string> fieldLabelsHotel;

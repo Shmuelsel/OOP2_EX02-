@@ -6,14 +6,14 @@ namespace Config {
     std::vector<std::string> fieldLabelsHotel = { "Hotel Name:", "Check-in Date:", "Check-out Date:", "Number of Guests:", "Room Type:" };
     std::vector<std::string> fieldLabelsFlight = { "Departure Airport:", "Arrival Airport:", "Departure Date:", "Preferred Time:" };
 
-	std::vector<std::unique_ptr<FieldBase>> fieldsForm = {
-		std::make_unique<Field<std::string>>("Name:"),
-		std::make_unique<Field<std::string>>("ID:"),
-		std::make_unique<Field<std::string>>("Address:"),
-		std::make_unique<Field<std::string>>("Email:")
-	};
+    /*std::vector<std::unique_ptr<FieldBase>> fieldsForm;
+    fieldsForm.push_back(std::make_unique<Field<std::string>>("Name:", "John Doe"));
+    fieldsForm.push_back(std::make_unique<Field<std::string>>("ID:", "John Doe"));
+    fieldsForm.push_back(std::make_unique<Field<std::string>>("Address:", "John Doe"));
+    fieldsForm.push_back(std::make_unique<Field<std::string>>("Email:", "John Doe"));*/
+
       
-    std::vector<std::unique_ptr<FieldBase>> fieldsHotel = {
+    /*std::vector<std::unique_ptr<FieldBase>> fieldsHotel = {
         std::make_unique<Field<std::string>>("Hotel Name:"),
         std::make_unique<Field<std::string>>("Check-in Date:"),
         std::make_unique<Field<std::string>>("Check-out Date:"),
@@ -26,6 +26,6 @@ namespace Config {
         std::make_unique<Field<std::string>>("Arrival Airport:"),
         std::make_unique<Field<std::string>>("Departure Date:"),
         std::make_unique<Field<std::vector<std::string>>>("Preferred Time:", std::vector<std::string>{"Morning", "Afternoon", "Evening", "Don't Care"})
-    };
+    };*/
 
 }

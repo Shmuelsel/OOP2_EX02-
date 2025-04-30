@@ -5,13 +5,20 @@
 #include "config.h"
 #include "Field.h"
 
+
+
+
 HotelBookingForm::HotelBookingForm(sf::RenderWindow& win, DialogueManager* manager)
     : BookingForm(win, manager) {  // ✅ Calls base constructor
     fieldLabels.insert(fieldLabels.end(), Config::fieldLabelsHotel.begin(), Config::fieldLabelsHotel.end());
-    for (auto& field : Config::fieldsHotel) {
-        fields.push_back(std::move(field));
-    }
-    userInput.resize(fieldLabels.size(), "");  // ✅ Resize input fields
+
+    fields.push_back(std::make_unique<Field<std::string>>("Hotel Name:"));
+    fields.push_back(std::make_unique<Field<std::string>>("Check-in Date:"));
+	fields.push_back(std::make_unique<Field<std::string>>("Check-out Date:"));
+	fields.push_back(std::make_unique<Field<int>>("Number of Guests:"));
+	fields.push_back(std::make_unique<Field<std::string>>("Room Type:"));
+
+    userInput.resize(fields.size(), "");  // ✅ Resize input fields
     setDefaultValues();
 }
 
@@ -47,8 +54,8 @@ void HotelBookingForm::render(sf::RenderWindow& window) {
 
     // ✅ Render input fields dynamically
     int yOffset = 60;
-    for (std::size_t i = 0; i < fieldLabels.size(); ++i) {
-        sf::Text label(fieldLabels[i], font, 18);
+    for (std::size_t i = 0; i < fields.size(); ++i) {
+        sf::Text label(fields[i]->getLabel(), font, 18);
         label.setFillColor(sf::Color(60, 60, 60));
         label.setPosition(20, yOffset);
         window.draw(label);

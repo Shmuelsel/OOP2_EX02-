@@ -6,12 +6,14 @@
 #include "Field.h"
 
 BookingForm::BookingForm(sf::RenderWindow& win, DialogueManager* manager) :window(win), formManager(manager) {
-    fieldLabels = Config::fieldLabelsBase;  // ✅ Add common fields
-	for (auto& field : Config::fieldsForm) {
-		fields.push_back(std::move(field)); 
-    }
+    //fieldLabels = Config::fieldLabelsBase;  // ✅ Add common fields
 	
-    userInput.resize(fieldLabels.size(), "");  // Initialize input fields
+    fields.push_back(std::make_unique<Field<std::string>>("Namerr:"));
+    fields.push_back(std::make_unique<Field<std::string>>("ID:"));
+    fields.push_back(std::make_unique<Field<std::string>>("Address:"));
+    fields.push_back(std::make_unique<Field<std::string>>("Email:"));
+
+    //userInput.resize(fields.size(), "");  // Initialize input fields
 }
 
 void BookingForm::openConfirmationWindow() {
@@ -52,8 +54,8 @@ void BookingForm::openConfirmationWindow() {
         confirmWindow.draw(title);
 
         std::string bookingInfo;
-        for (size_t i = 0; i < fieldLabels.size(); ++i) {
-            bookingInfo += fieldLabels[i] + " " + userInput[i] + "\n";
+        for (size_t i = 0; i < fields.size(); ++i) {
+            bookingInfo += fields[i]->getLabel() + " " + fields[i]->getValueAsString() + "\n";
         }
 
         sf::Text details(bookingInfo, font, 18);
@@ -96,20 +98,20 @@ void BookingForm::openConfirmationWindow() {
 
 void BookingForm::handleInput(sf::Event event) {
     if (event.type == sf::Event::TextEntered) {
-        if (event.text.unicode == '\b' && !userInput[activeField].empty()) {
-            userInput[activeField].pop_back();
+        if (event.text.unicode == '\b' && !fields[activeField]->getValueAsString().empty()) {
+            fields[activeField]->getValueAsString().pop_back();
         }
         else if (event.text.unicode >= 32 && event.text.unicode < 128) {
-            userInput[activeField] += static_cast<char>(event.text.unicode);
+            fields[activeField]->getValueAsString() += static_cast<char>(event.text.unicode);
         }
     }
     else if (event.type == sf::Event::KeyPressed) {
         if (event.key.code == sf::Keyboard::Tab) {
-            activeField = (activeField + 1) % userInput.size();
+            activeField = (activeField + 1) % fields.size();
         }
         if (event.key.code == sf::Keyboard::Return) {
             std::cout << "Entered Data: ";
-            for (const auto& field : userInput) std::cout << field << " ";
+            for (const auto& field : fields) std::cout << field << " ";
             std::cout << std::endl;
         }
     }
@@ -118,7 +120,7 @@ void BookingForm::handleInput(sf::Event event) {
 
         int yOffset = 60;  // ✅ Start from the top
 
-        for (std::size_t i = 0; i < fieldLabels.size(); ++i) {
+        for (std::size_t i = 0; i < fields.size(); ++i) {
             sf::FloatRect inputBoxBounds(260, yOffset - 5, 250, 35);  // ✅ Uses dynamic positioning
             if (inputBoxBounds.contains(mousePos)) {
                 activeField = i;

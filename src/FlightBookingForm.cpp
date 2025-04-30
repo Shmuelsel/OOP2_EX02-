@@ -7,10 +7,13 @@
 FlightBookingForm::FlightBookingForm(sf::RenderWindow& win, DialogueManager* manager)
     : BookingForm(win,manager) {  // ✅ Calls base constructor
     fieldLabels.insert(fieldLabels.end(), Config::fieldLabelsFlight.begin(), Config::fieldLabelsFlight.end());
-	for (auto& field : Config::fieldsFlight) {
-        fields.push_back(std::move(field));
-	}
-    userInput.resize(fieldLabels.size(), "");  // Resize to include all fields
+	
+    fields.push_back(std::make_unique<Field<std::string>>("Departure Airport:"));
+    fields.push_back(std::make_unique<Field<std::string>>("Arrival Airport:"));
+    fields.push_back(std::make_unique<Field<std::string>>("Departure Date:"));
+    fields.push_back(std::make_unique<Field<std::vector<std::string>>>("Preferred Time:", std::vector<std::string>{"Morning", "Afternoon", "Evening", "Don't Care"}));
+
+    userInput.resize(fields.size(), "");  // Resize to include all fields
     setDefaultValues();
 }
     
@@ -48,8 +51,8 @@ void FlightBookingForm::render(sf::RenderWindow& window) {
 
     // ✅ Loop through form fields and render
     int yOffset = 60;
-    for (std::size_t i = 0; i < fieldLabels.size(); ++i) {
-        sf::Text label(fieldLabels[i], font, 18);
+    for (std::size_t i = 0; i < fields.size(); ++i) {
+        sf::Text label(fields[i]->getLabel(), font, 18);
         label.setFillColor(sf::Color(60, 60, 60));
         label.setPosition(20, yOffset);
         window.draw(label);
