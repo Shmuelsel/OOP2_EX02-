@@ -11,20 +11,20 @@ EventBookingForm::EventBookingForm(sf::RenderWindow& win, DialogueManager* manag
         });
 
     userInput.resize(fieldLabels.size(), "");  // ✅ Resize input fields
-    setDefaultValues();
+    //setDefaultValues();
 }
 
-std::string EventBookingForm::setDefaultValues() {
-    time_t now = time(0);
-    tm ltm;
-    localtime_s(&ltm, &now);  // ✅ Safe alternative to localtime()
-
-    userInput[6] = std::to_string(1900 + ltm.tm_year) + "-" +
-        std::to_string(1 + ltm.tm_mon) + "-" +
-        std::to_string(ltm.tm_mday);
-    userInput[9] = "General Admission";
-	return "0";
-}
+//std::string EventBookingForm::setDefaultValues() {
+//    time_t now = time(0);
+//    tm ltm;
+//    localtime_s(&ltm, &now);  // ✅ Safe alternative to localtime()
+//
+//    userInput[6] = std::to_string(1900 + ltm.tm_year) + "-" +
+//        std::to_string(1 + ltm.tm_mon) + "-" +
+//        std::to_string(ltm.tm_mday);
+//    userInput[9] = "General Admission";
+//	return "0";
+//}
 
 std::string EventBookingForm::getFormType() const {
     return "Event Booking";

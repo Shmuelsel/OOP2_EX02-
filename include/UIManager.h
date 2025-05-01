@@ -3,19 +3,15 @@
 
 #include <SFML/Graphics.hpp>
 #include "DialogueManager.h"
+#include "Button.h"
 
 class UIManager {
 private:
     sf::RenderWindow& window;
     DialogueManager& formManager;
-
-    // ✅ Fix: Declare buttons and texts
     sf::Font font;
-    sf::RectangleShape buttonFlight, buttonHotel, buttonCar, buttonEvent, buttonTrain;
-    sf::Text textFlight, textHotel, textCar, textEvent, textTrain;
-
-    // ✅ Fix: Declare setupButton
-    void setupButton(sf::RectangleShape& button, sf::Text& text, const std::string& label, float y);
+	std::vector<Button> buttons;
+	void initializeButtons();
 
 public:
     UIManager(sf::RenderWindow& win, DialogueManager& dManager);
@@ -23,4 +19,4 @@ public:
     void render();
 };
 
-#endif // UIMANAGER_H
+#endif

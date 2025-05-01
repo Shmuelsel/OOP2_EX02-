@@ -7,10 +7,23 @@
 #include "Button.h"
 
 BookingForm::BookingForm(sf::RenderWindow& win, DialogueManager* manager) :window(win), formManager(manager) {	
-    fields.push_back(std::make_unique<Field<std::string>>("Name:"));
-    fields.push_back(std::make_unique<Field<std::string>>("ID:"));
-    fields.push_back(std::make_unique<Field<std::string>>("Address:"));
-    fields.push_back(std::make_unique<Field<std::string>>("Email:"));
+	initializeFields();
+}
+
+std::string BookingForm::setDefaultDate() {
+	time_t now = time(0);
+	tm ltm;
+	localtime_s(&ltm, &now);  // Safe alternative to localtime()
+	return std::to_string(1900 + ltm.tm_year) + "-" +
+		std::to_string(1 + ltm.tm_mon) + "-" +
+		std::to_string(ltm.tm_mday);
+}
+
+void BookingForm::initializeFields() {
+	fields.push_back(std::make_unique<Field<std::string>>("Name:"));
+	fields.push_back(std::make_unique<Field<std::string>>("ID:"));
+	fields.push_back(std::make_unique<Field<std::string>>("Address:"));
+	fields.push_back(std::make_unique<Field<std::string>>("Email:"));
 
 	buttons.push_back(Button("Done", 20, 570, 140, 40, sf::Color::Green));
 	buttons.push_back(Button("Cancel", 200, 570, 140, 40, sf::Color::Red));
@@ -25,30 +38,32 @@ void BookingForm::openConfirmationWindow() {
 
     bool approved = false;
 
+    std::unique_ptr<Button> approveButton = std::make_unique<Button>("Approve", 100, 300, 120, 40, sf::Color::Green);
+    std::unique_ptr<Button> cancelButton = std::make_unique<Button>("Cancel", 280, 300, 120, 40, sf::Color::Red);
+
+
     while (confirmWindow.isOpen()) {
         sf::Event event;
-
-        Button approveButton("Approve", 100, 300, 120, 40, sf::Color::Green);
-        Button cancelButton("Cancel", 280, 300, 120, 40, sf::Color::Red);
 
         while (confirmWindow.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 confirmWindow.close();
 
-            sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
+            if (event.type == sf::Event::MouseButtonPressed) {
+                sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
 
-            if (approveButton.handleClick(mousePos)) {
-                std::cout << formTitle << " Confirmed! Returning to main menu." << std::endl;
-				approved = true;
-                confirmWindow.close();
-				
-            }
-            else if (cancelButton.handleClick(mousePos)) {
-                std::cout << formTitle << " Cancelled! Returning to main menu." << std::endl;
-                confirmWindow.close();
+                if (approveButton->handleClick(mousePos)) {
+                    std::cout << formTitle << " Confirmed! Returning to main menu." << std::endl;
+                    approved = true;
+                    confirmWindow.close();
+
+                }
+                else if (cancelButton->handleClick(mousePos)) {
+                    std::cout << formTitle << " Cancelled! Returning to main menu." << std::endl;
+                    confirmWindow.close();
+                }
             }
         }
-
         confirmWindow.clear(sf::Color(240, 240, 240));
 
         sf::Text title("Confirm " + formTitle, font, 22);
@@ -68,8 +83,8 @@ void BookingForm::openConfirmationWindow() {
         confirmWindow.draw(details);
 
 		
-		approveButton.render(confirmWindow, font);
-		cancelButton.render(confirmWindow, font);
+		approveButton->render(confirmWindow, font);
+		cancelButton->render(confirmWindow, font);
         confirmWindow.display();
     }
 
@@ -94,17 +109,19 @@ void BookingForm::handleInput(sf::Event event) {
 			if (button.handleClick(mousePos)) {
 				if (button.getText() == "Done") {
 					openConfirmationWindow();
+					return;
 				}
 				else if (button.getText() == "Cancel") {
 					std::cout << "Cancelled " << getFormType() << std::endl;
 					formManager->closeForm();
+					return;
 				}
 			}
 		}
         float yOffset = 60;
 
         for (size_t i = 0; i < fields.size(); ++i) {
-            sf::FloatRect inputBoxBounds(240, yOffset - 5, 250, 35); // התאם לגודל תיבת האינפוט
+            sf::FloatRect inputBoxBounds(240, yOffset - 5, 250, 35);
             if (inputBoxBounds.contains(mousePos)) {
                 activeField = i;
                 return;
@@ -129,10 +146,6 @@ void BookingForm::renderCommon(sf::RenderWindow& window) {
 	for (std::size_t i = 0; i < fields.size(); ++i) {
 		fields[i]->render(window, font, 260, 60 + i * 50, i == activeField, showCursor);
 	}
-
-	/*for (auto& slcBtn : selectionButtons) {
-		slcBtn.render(window, font);
-	}*/
 
 	for (auto& button : buttons) {
 		button.render(window, font);

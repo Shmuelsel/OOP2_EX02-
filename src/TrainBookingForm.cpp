@@ -11,21 +11,21 @@ TrainBookingForm::TrainBookingForm(sf::RenderWindow& win, DialogueManager* manag
         });
 
     userInput.resize(fieldLabels.size(), "");  // ✅ Resize input fields
-    setDefaultValues();
+    //setDefaultValues();
 }
 
-std::string TrainBookingForm::setDefaultValues() {
-    time_t now = time(0);
-    tm ltm;
-    localtime_s(&ltm, &now);  // ✅ Safe alternative to localtime()
-
-    userInput[6] = std::to_string(1900 + ltm.tm_year) + "-" +
-        std::to_string(1 + ltm.tm_mon) + "-" +
-        std::to_string(ltm.tm_mday);
-	userInput[8] = "Don't Care";
-    userInput[9] = "None";
-	return "0";
-}
+//std::string TrainBookingForm::setDefaultValues() {
+//    time_t now = time(0);
+//    tm ltm;
+//    localtime_s(&ltm, &now);  // ✅ Safe alternative to localtime()
+//
+//    userInput[6] = std::to_string(1900 + ltm.tm_year) + "-" +
+//        std::to_string(1 + ltm.tm_mon) + "-" +
+//        std::to_string(ltm.tm_mday);
+//	userInput[8] = "Don't Care";
+//    userInput[9] = "None";
+//	return "0";
+//}
 
 std::string TrainBookingForm::getFormType() const {
     return "Train Booking Form";

@@ -5,37 +5,23 @@
 #include "CarRentalForm.h"
 #include "EventBookingForm.h"
 #include "TrainBookingForm.h"
+#include "Button.h"
 
 UIManager::UIManager(sf::RenderWindow& win, DialogueManager& dManager)
     : window(win), formManager(dManager) {
+	initializeButtons();
+}
 
- 
+void UIManager::initializeButtons() {
     font.loadFromFile("C:/Windows/Fonts/arialbd.ttf");
-    
 
-    // ✅ Fix: Setup all buttons using setupButton()
-    setupButton(buttonFlight, textFlight, "Flight Booking", 150);
-    setupButton(buttonHotel, textHotel, "Hotel Booking", 220);
-    setupButton(buttonCar, textCar, "Car Rental", 290);
-    setupButton(buttonEvent, textEvent, "Event Booking", 360);
-    setupButton(buttonTrain, textTrain, "Train Booking", 430);
-
+    buttons.push_back(Button("Flight Booking", 100, 150, 300, 50));
+    buttons.push_back(Button("Hotel Booking", 100, 220, 300, 50));
+    buttons.push_back(Button("Car Rental", 100, 290, 300, 50));
+    buttons.push_back(Button("Event Booking", 100, 360, 300, 50));
+    buttons.push_back(Button("Train Booking", 100, 430, 300, 50));
 }
 
-// ✅ Fix: Define `setupButton()`
-void UIManager::setupButton(sf::RectangleShape& button, sf::Text& text, const std::string& label, float y) {
-    button.setSize(sf::Vector2f(300, 50));
-    button.setFillColor(sf::Color::Blue);
-    button.setPosition(100, y);
-
-    text.setFont(font);  // ✅ Fix: Use class member `font`
-    text.setString(label);
-    text.setCharacterSize(24);
-    text.setFillColor(sf::Color::White);
-    text.setPosition(120, y + 10);
-}
-
-// ✅ Fix: Ensure render() uses class member buttons
 void UIManager::render() {
     sf::Text title("Travel Booking System", font, 30);
     title.setFillColor(sf::Color::Black);
@@ -43,49 +29,32 @@ void UIManager::render() {
     title.setPosition(80, 20);
     window.draw(title);
 
-    // ✅ Draw all buttons
-    window.draw(buttonFlight);
-    window.draw(textFlight);
-    window.draw(buttonHotel);
-    window.draw(textHotel);
-    window.draw(buttonCar);
-    window.draw(textCar);
-    window.draw(buttonEvent);
-    window.draw(textEvent);
-    window.draw(buttonTrain);
-    window.draw(textTrain);
+    for (const auto& button : buttons) {
+        button.render(window, font);
+    }
 }
-
 
 void UIManager::handleEvent(const sf::Event& event) {
     if (event.type == sf::Event::MouseButtonPressed) {
         sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
-        std::cout << "Mouse Clicked at: " << mousePos.x << ", " << mousePos.y << std::endl;  // ✅ Debug log
-
-        if (buttonFlight.getGlobalBounds().contains(mousePos)) {
-            std::cout << "Flight Booking Button Clicked!" << std::endl;  // ✅ Debug
-            formManager.setActiveForm(std::make_unique<FlightBookingForm>(window, &formManager));
+        for (auto& button : buttons) {
+            if (button.handleClick(mousePos)) {
+                if (button.getText() == "Flight Booking") {
+                    formManager.setActiveForm(std::make_unique<FlightBookingForm>(window, &formManager));
+                }
+                else if (button.getText() == "Hotel Booking") {
+                    formManager.setActiveForm(std::make_unique<HotelBookingForm>(window, &formManager));
+                }
+                else if (button.getText() == "Car Rental") {
+                    formManager.setActiveForm(std::make_unique<CarRentalForm>(window, &formManager));
+                }
+                else if (button.getText() == "Event Booking") {
+                    formManager.setActiveForm(std::make_unique<EventBookingForm>(window, &formManager));
+                }
+                else if (button.getText() == "Train Booking") {
+                    formManager.setActiveForm(std::make_unique<TrainBookingForm>(window, &formManager));
+                }
+            }
         }
-
-        if (buttonHotel.getGlobalBounds().contains(mousePos)) {
-            std::cout << "Hotel Booking Button Clicked!" << std::endl;
-            formManager.setActiveForm(std::make_unique<HotelBookingForm>(window, &formManager));
-        }
-
-        if (buttonCar.getGlobalBounds().contains(mousePos)) {
-            std::cout << "Car Rental Button Clicked!" << std::endl;
-            formManager.setActiveForm(std::make_unique<CarRentalForm>(window, &formManager));
-        }
-
-        if (buttonEvent.getGlobalBounds().contains(mousePos)) {
-            std::cout << "Event Booking Button Clicked!" << std::endl;
-            formManager.setActiveForm(std::make_unique<EventBookingForm>(window, &formManager));
-        }
-
-        if (buttonTrain.getGlobalBounds().contains(mousePos)) {
-            std::cout << "Train Booking Button Clicked!" << std::endl;
-            formManager.setActiveForm(std::make_unique<TrainBookingForm>(window, &formManager));
-        }
-        
     }
 }

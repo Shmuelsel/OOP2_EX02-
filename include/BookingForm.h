@@ -25,30 +25,25 @@ protected:
 
     sf::RenderWindow& window;
     DialogueManager* formManager;
-    //need to add a font
     std::vector<std::unique_ptr<FieldBase>> fields;
 	
     std::size_t activeField = 0;
     sf::Clock cursorTimer;
-
-    virtual std::string setDefaultValues() = 0;
-
-    //void renderCommon(sf::RenderWindow& window);
+	virtual void initializeFields();
+    virtual std::string setDefaultDate();
     bool handleCommonInput(sf::Event event);
     bool showCursor = true;
 	std::vector<Button> buttons;
-	std::vector<Button> selectionButtons;
     
 
 public:
-    BookingForm(sf::RenderWindow& win, DialogueManager* manager);//need to add a font
+    BookingForm(sf::RenderWindow& win, DialogueManager* manager);
     virtual ~BookingForm() = default;
     virtual void render(sf::RenderWindow& window) = 0;
     void handleInput(sf::Event event);
     virtual std::string getFormType() const = 0;
     void openConfirmationWindow();
     void renderCommon(sf::RenderWindow& window);
-    //virtual const std::vector<std::unique_ptr<FieldBase>>& getFields() const = 0;
 };
 
 #endif // BOOKINGFORM_H
