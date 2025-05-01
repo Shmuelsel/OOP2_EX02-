@@ -33,5 +33,7 @@ std::string HotelBookingForm::getFormType() const {
     return "Hotel Booking";
 }
 
-void HotelBookingForm::render(sf::RenderWindow& window) {}
+void HotelBookingForm::render(sf::RenderWindow& window) {
+	//renderCommon(window);
+}
 void HotelBookingForm::handleInput(sf::Event event) {}

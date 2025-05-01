@@ -34,4 +34,5 @@ std::string FlightBookingForm::getFormType() const {
     return "Flight Booking Form";
 }
 
-void FlightBookingForm::render(sf::RenderWindow& window) { }
+void FlightBookingForm::render(sf::RenderWindow& window) {
+}

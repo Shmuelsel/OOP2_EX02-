@@ -1,4 +1,3 @@
-// Field.h
 #ifndef FIELD_H
 #define FIELD_H
 
@@ -16,9 +15,9 @@ public:
     virtual void handleInput(sf::Event event) = 0;
     virtual std::string getValueAsString() const = 0;
     virtual std::string getLabel() const = 0;
-	virtual void setValueFromString(const std::string& str) = 0;
+    virtual void setValueFromString(const std::string& str) = 0;
     virtual std::vector<std::string> validate() const = 0;
-
+    virtual void handleClick(const sf::Vector2f& mousePos) = 0; // פונקציה חדשה לטיפול בלחיצות
 };
 
 template <typename T>
@@ -40,7 +39,7 @@ public:
     void render(sf::RenderWindow& window, const sf::Font& font, float x, float y, bool isActive, bool cursorVisible) const override {
         sf::Text labelText(label, font, 18);
         labelText.setFillColor(sf::Color(60, 60, 60));
-		labelText.setStyle(sf::Text::Bold);
+        labelText.setStyle(sf::Text::Bold);
         labelText.setPosition(20, y);
         window.draw(labelText);
 
@@ -73,6 +72,10 @@ public:
         }
     }
 
+    void handleClick(const sf::Vector2f& mousePos) override {
+        // שדות רגילים (למשל, טקסט או מספרים) לא מטפלים בלחיצות
+    }
+
     std::string getValueAsString() const override {
         if constexpr (std::is_same_v<T, std::string>) {
             return value;
@@ -86,7 +89,7 @@ public:
         return "";
     }
 
-    void setValueFromString(const std::string& str) {
+    void setValueFromString(const std::string& str) override {
         if constexpr (std::is_same_v<T, std::string>) {
             value = str;
         }
@@ -119,12 +122,12 @@ public:
         return errors;
     }
 
-	void setValue(const T& newValue) {
-		value = newValue;
-	}
+    void setValue(const T& newValue) {
+        value = newValue;
+    }
 };
 
-// Specialization עבור שדה בחירה מרובה (כמו Preferred Time)
+// Specialization עבור שדה בחירה מרובה (כמו Room Type)
 template <>
 class Field<std::vector<std::string>> : public FieldBase {
 private:
@@ -133,18 +136,19 @@ private:
     std::vector<std::string> options;
     std::vector<Button> buttons;
     std::vector<std::unique_ptr<Validator<std::vector<std::string>>>> validators;
+    float startX, startY, buttonWidth, buttonHeight;
 
 public:
     Field(const std::string& label, const std::vector<std::string>& options,
         const std::vector<std::string>& defaultValue = {},
         float startX = 10, float startY = 520, float buttonWidth = 150, float buttonHeight = 30)
-        : label(label), value(defaultValue), options(options) {
+        : label(label), value(defaultValue), options(options),
+        startX(startX), startY(startY), buttonWidth(buttonWidth), buttonHeight(buttonHeight) {
         float buttonX = startX;
         for (const auto& option : options) {
             buttons.emplace_back(option, buttonX, startY, buttonWidth, buttonHeight);
-            buttonX += buttonWidth + 10; // מרווח של 10 פיקסלים
+            buttonX += buttonWidth + 10;
         }
-        // עדכון מצב הכפתורים בהתאם לערך ברירת מחדל
         for (size_t i = 0; i < options.size(); ++i) {
             buttons[i].setSelected(std::find(value.begin(), value.end(), options[i]) != value.end());
         }
@@ -158,7 +162,7 @@ public:
         sf::Text labelText(label, font, 18);
         labelText.setFillColor(sf::Color(60, 60, 60));
         labelText.setStyle(sf::Text::Bold);
-        labelText.setPosition(x, y);
+        labelText.setPosition(startX, startY - 30);
         window.draw(labelText);
 
         for (const auto& button : buttons) {
@@ -168,42 +172,40 @@ public:
         std::string valueText = getValueAsString();
         sf::Text valueDisplay(valueText, font, 16);
         valueDisplay.setFillColor(sf::Color::Black);
-        valueDisplay.setPosition(x + 220, y);
+        valueDisplay.setPosition(startX, startY + buttonHeight + 10);
         window.draw(valueDisplay);
     }
 
     void handleInput(sf::Event event) override {
-        if (event.type == sf::Event::MouseButtonPressed) {
-            sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
-            value.clear();
-            for (size_t i = 0; i < buttons.size(); ++i) {
-                if (buttons[i].handleClick(mousePos)) {
-                    if (options[i] == "Don't Care") {
-                        // בטל את כל הבחירות האחרות
-                        for (auto& button : buttons) {
-                            button.setSelected(false);
-                        }
-                        buttons[i].setSelected(true);
-                        value = { "Don't Care" };
+        // אין טיפול בקלט טקסטואלי עבור שדה בחירה מרובה
+    }
+
+    void handleClick(const sf::Vector2f& mousePos) override {
+        for (size_t i = 0; i < buttons.size(); ++i) {
+            if (buttons[i].handleClick(mousePos)) {
+                if (options[i] == "Don't Care") {
+                    value.clear();
+                    for (auto& button : buttons) {
+                        button.setSelected(false);
                     }
-                    else {
-                        // בטל את "Don't Care" אם קיים
-                        for (size_t j = 0; j < options.size(); ++j) {
-                            if (options[j] == "Don't Care") {
-                                buttons[j].setSelected(false);
-                            }
-                        }
-                        // עדכן את הבחירה
-                        buttons[i].setSelected(!buttons[i].getSelected());
-                        // עדכן את value
-                        for (size_t j = 0; j < buttons.size(); ++j) {
-                            if (buttons[j].getSelected()) {
-                                value.push_back(options[j]);
-                            }
-                        }
-                    }
-                    return;
+                    buttons[i].setSelected(true);
+                    value = { "Don't Care" };
                 }
+                else {
+                    for (size_t j = 0; j < options.size(); ++j) {
+                        if (options[j] == "Don't Care") {
+                            buttons[j].setSelected(false);
+                        }
+                    }
+                    buttons[i].setSelected(!buttons[i].getSelected());
+                    value.clear();
+                    for (size_t j = 0; j < buttons.size(); ++j) {
+                        if (buttons[j].getSelected()) {
+                            value.push_back(options[j]);
+                        }
+                    }
+                }
+                return;
             }
         }
     }

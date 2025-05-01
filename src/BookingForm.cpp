@@ -94,43 +94,65 @@ void BookingForm::openConfirmationWindow() {
 }
 
 void BookingForm::handleInput(sf::Event event) {
-    if (activeField < fields.size()) {
-        fields[activeField]->handleInput(event);
-    }
+    try {
+        if (activeField < fields.size()) {
+            fields[activeField]->handleInput(event);
+        }
 
-    if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Tab) {
-        activeField = (activeField + 1) % fields.size();
-    }
+        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Tab) {
+            activeField = (activeField + 1) % fields.size();
+        }
 
-    if (event.type == sf::Event::MouseButtonPressed) {
-        sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
-
-		for (auto& button : buttons) {
-			if (button.handleClick(mousePos)) {
-				if (button.getText() == "Done") {
-					openConfirmationWindow();
-					return;
-				}
-				else if (button.getText() == "Cancel") {
-					std::cout << "Cancelled " << getFormType() << std::endl;
-					formManager->closeForm();
-					return;
-				}
-			}
-		}
-        float yOffset = 60;
-
-        for (size_t i = 0; i < fields.size(); ++i) {
-            sf::FloatRect inputBoxBounds(240, yOffset - 5, 250, 35);
-            if (inputBoxBounds.contains(mousePos)) {
-                activeField = i;
-                return;
+        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) {
+            std::cout << "Current Form Data (" << getFormType() << "):\n";
+            for (const auto& field : fields) {
+                std::cout << field->getLabel() << " " << field->getValueAsString() << "\n";
             }
-            yOffset += 50;
+            std::cout << "------------------------\n";
+        }
+
+        if (event.type == sf::Event::MouseButtonPressed) {
+            sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
+
+            // טיפול בלחיצות על כפתורי בחירה מרובה של השדות
+            for (size_t i = 0; i < fields.size(); ++i) {
+                fields[i]->handleClick(mousePos);
+            }
+
+            // טיפול בלחיצות על כפתורי Done ו-Cancel
+            for (auto& button : buttons) {
+                if (button.handleClick(mousePos)) {
+                    if (button.getText() == "Done") {
+                        openConfirmationWindow();
+                        return;
+                    }
+                    else if (button.getText() == "Cancel") {
+                        std::cout << "Cancelled " << getFormType() << std::endl;
+                        formManager->closeForm();
+                        return;
+                    }
+                }
+            }
+
+            // טיפול בבחירת שדה פעיל
+            float yOffset = 60;
+            for (size_t i = 0; i < fields.size(); ++i) {
+                sf::FloatRect inputBoxBounds(240, yOffset - 5, 250, 35);
+                if (inputBoxBounds.contains(mousePos)) {
+                    activeField = i;
+                    return;
+                }
+                yOffset += 50;
+            }
         }
     }
+    catch (const std::exception& e) {
+        std::cerr << "Exception in BookingForm::handleInput: " << e.what() << std::endl;
+    }
+    catch (...) {
+        std::cerr << "Unknown exception in BookingForm::handleInput" << std::endl;
+    }
 }
-
 void BookingForm::renderCommon(sf::RenderWindow& window) {
 	sf::Font font;
 	font.loadFromFile("C:/Windows/Fonts/arialbd.ttf");
