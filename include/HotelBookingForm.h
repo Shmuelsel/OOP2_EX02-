@@ -9,7 +9,6 @@ public:
     void render(sf::RenderWindow& window) override;
     void handleInput(sf::Event event) ;
 private:
-    std::array<std::string, 4> roomTypeSelection = {"Single Room","Double Room","Family Room","Presidential Suite"};
 	int selectedRoomType = 0;
 	void initializeFields() override;
 

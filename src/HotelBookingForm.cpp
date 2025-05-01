@@ -25,7 +25,7 @@ void HotelBookingForm::initializeFields() {
 
 	fields.push_back(std::make_unique<Field<std::vector<std::string>>>(
 		"Room Type:", roomOptions, std::vector<std::string>{"Single Room"},
-		10, 520, 130, 30
+		10, 520, 150, 30
 	));
 }
 

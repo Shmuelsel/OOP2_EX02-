@@ -4,6 +4,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <string>
+#include <iostream>
 
 class Button {
 private:
@@ -20,7 +21,7 @@ private:
 
 public:
     Button(const std::string& text, float x, float y, float width = 100, float height = 30)
-		: text(text), position(x, y), size(width, height), isSelected(false),
+		: text(text), position(x, y), size(width, height), isSelected(false),useFixedColor(false),
         selectedColor(sf::Color(0, 120, 255)), unselectedColor(sf::Color::White),
         textSelectedColor(sf::Color::White), textUnselectedColor(sf::Color::Black) {
     }
@@ -35,19 +36,21 @@ public:
     void render(sf::RenderWindow& window, const sf::Font& font) const {
         sf::RectangleShape buttonShape(size);
         buttonShape.setPosition(position);
+		sf::Text buttonText(text, font, 24);
+        buttonText.setOrigin(buttonText.getLocalBounds().width / 2, buttonText.getLocalBounds().height / 2);
+        buttonText.setPosition(position.x + size.x / 2, position.y + size.y / 2);
         if (useFixedColor) {
             buttonShape.setFillColor(fixedColor);
+            buttonText.setFillColor(sf::Color(255,255,255));
         }
         else {
-            buttonShape.setFillColor(isSelected ? selectedColor : unselectedColor);
+            buttonShape.setFillColor(sf::Color(0, 0, 255));
+            buttonText.setFillColor(isSelected ? textSelectedColor : textUnselectedColor);
         }        
-        buttonShape.setOutlineThickness(2);
-        buttonShape.setOutlineColor(sf::Color(160, 160, 160));
+        //buttonShape.setOutlineThickness(2);
+        //buttonShape.setOutlineColor(sf::Color(160, 160, 160));
+ 
         window.draw(buttonShape);
-
-        sf::Text buttonText(text, font, 16);
-        buttonText.setFillColor(isSelected ? textSelectedColor : textUnselectedColor);
-        buttonText.setPosition(position.x + 10, position.y + 5);
         window.draw(buttonText);
     }
 

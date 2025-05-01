@@ -15,11 +15,11 @@ UIManager::UIManager(sf::RenderWindow& win, DialogueManager& dManager)
 void UIManager::initializeButtons() {
     font.loadFromFile("C:/Windows/Fonts/arialbd.ttf");
 
-    buttons.push_back(Button("Flight Booking", 100, 150, 300, 50));
-    buttons.push_back(Button("Hotel Booking", 100, 220, 300, 50));
-    buttons.push_back(Button("Car Rental", 100, 290, 300, 50));
-    buttons.push_back(Button("Event Booking", 100, 360, 300, 50));
-    buttons.push_back(Button("Train Booking", 100, 430, 300, 50));
+    buttons.push_back(Button("Flight Booking", 100, 150, 300, 50, sf::Color(0,0,255)));
+    buttons.push_back(Button("Hotel Booking", 100, 220, 300, 50, sf::Color(0, 0, 255)));
+    buttons.push_back(Button("Car Rental", 100, 290, 300, 50, sf::Color(0, 0, 255)));
+    buttons.push_back(Button("Event Booking", 100, 360, 300, 50, sf::Color(0, 0, 255)));
+    buttons.push_back(Button("Train Booking", 100, 430, 300, 50, sf::Color(0, 0, 255)));
 }
 
 void UIManager::render() {

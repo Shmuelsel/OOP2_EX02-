@@ -39,11 +39,10 @@ public:
     void render(sf::RenderWindow& window, const sf::Font& font, float x, float y, bool isActive, bool cursorVisible) const override {
         sf::Text labelText(label, font, 18);
         labelText.setFillColor(sf::Color(60, 60, 60));
-        labelText.setStyle(sf::Text::Bold);
-        labelText.setPosition(20, y);
+        labelText.setPosition(x, y);
         window.draw(labelText);
 
-        sf::RectangleShape inputBox(sf::Vector2f(250, 35));
+        sf::RectangleShape inputBox(sf::Vector2f(350, 35));
         inputBox.setPosition(240, y - 5);
         inputBox.setFillColor(sf::Color::White);
         inputBox.setOutlineThickness(2);
@@ -145,6 +144,7 @@ public:
         : label(label), value(defaultValue), options(options),
         startX(startX), startY(startY), buttonWidth(buttonWidth), buttonHeight(buttonHeight) {
         float buttonX = startX;
+
         for (const auto& option : options) {
             buttons.emplace_back(option, buttonX, startY, buttonWidth, buttonHeight);
             buttonX += buttonWidth + 10;

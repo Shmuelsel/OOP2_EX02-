@@ -25,8 +25,8 @@ void BookingForm::initializeFields() {
 	fields.push_back(std::make_unique<Field<std::string>>("Address:"));
 	fields.push_back(std::make_unique<Field<std::string>>("Email:"));
 
-	buttons.push_back(Button("Done", 20, 570, 140, 40, sf::Color::Green));
-	buttons.push_back(Button("Cancel", 200, 570, 140, 40, sf::Color::Red));
+    buttons.push_back(Button("Done", 20, 570, 140, 40, sf::Color(50,150,50)));
+    buttons.push_back(Button("Cancel", 200, 570, 140, 40, sf::Color(180,0,0)));
 }
 
 void BookingForm::openConfirmationWindow() {
@@ -166,7 +166,7 @@ void BookingForm::renderCommon(sf::RenderWindow& window) {
     bool cursorVisible = (cursorTimer.getElapsedTime().asMilliseconds() % 1000 < 500);
 
 	for (std::size_t i = 0; i < fields.size(); ++i) {
-		fields[i]->render(window, font, 260, 60 + i * 50, i == activeField, showCursor);
+		fields[i]->render(window, font, 20, 60 + i * 50, i == activeField, showCursor);
 	}
 
 	for (auto& button : buttons) {
