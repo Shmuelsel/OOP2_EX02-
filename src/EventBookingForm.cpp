@@ -113,9 +113,9 @@ void EventBookingForm::render(sf::RenderWindow& window) {
     window.draw(cancelText);
 }
 
-const std::vector<std::unique_ptr<FieldBase>>& EventBookingForm::getFields() const{
-    return fields; // מחזיר רפרנס לווקטור
-}
+//const std::vector<std::unique_ptr<FieldBase>>& EventBookingForm::getFields() const{
+//    return fields; // מחזיר רפרנס לווקטור
+//}
 
 //void EventBookingForm::handleInput(sf::Event event) {
 //    if (event.type == sf::Event::TextEntered) {

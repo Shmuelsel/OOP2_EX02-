@@ -37,6 +37,7 @@ protected:
     bool handleCommonInput(sf::Event event);
     bool showCursor = true;
 	std::vector<Button> buttons;
+	std::vector<Button> selectionButtons;
     
 
 public:
@@ -47,7 +48,7 @@ public:
     virtual std::string getFormType() const = 0;
     void openConfirmationWindow();
     void renderCommon(sf::RenderWindow& window);
-    virtual const std::vector<std::unique_ptr<FieldBase>>& getFields() const = 0;
+    //virtual const std::vector<std::unique_ptr<FieldBase>>& getFields() const = 0;
 };
 
 #endif // BOOKINGFORM_H

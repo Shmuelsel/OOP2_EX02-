@@ -10,7 +10,9 @@ private:
     std::string text;
     sf::Vector2f position;
     sf::Vector2f size;
-    bool isSelected;
+	bool isSelected;
+    bool useFixedColor;
+	sf::Color fixedColor;
     sf::Color selectedColor;
     sf::Color unselectedColor;
     sf::Color textSelectedColor;
@@ -18,15 +20,27 @@ private:
 
 public:
     Button(const std::string& text, float x, float y, float width = 100, float height = 30)
-        : text(text), position(x, y), size(width, height), isSelected(false),
+		: text(text), position(x, y), size(width, height), isSelected(false),
         selectedColor(sf::Color(0, 120, 255)), unselectedColor(sf::Color::White),
         textSelectedColor(sf::Color::White), textUnselectedColor(sf::Color::Black) {
+    }
+
+    Button(const std::string& text, float x, float y, float width, float height, sf::Color fixedColor)
+        : text(text), position(x, y), size(width, height), isSelected(false), useFixedColor(true),
+        fixedColor(fixedColor), selectedColor(sf::Color::Transparent),
+        unselectedColor(sf::Color::Transparent), textSelectedColor(sf::Color::White),
+        textUnselectedColor(sf::Color::White) {
     }
 
     void render(sf::RenderWindow& window, const sf::Font& font) const {
         sf::RectangleShape buttonShape(size);
         buttonShape.setPosition(position);
-        buttonShape.setFillColor(isSelected ? selectedColor : unselectedColor);
+        if (useFixedColor) {
+            buttonShape.setFillColor(fixedColor);
+        }
+        else {
+            buttonShape.setFillColor(isSelected ? selectedColor : unselectedColor);
+        }        
         buttonShape.setOutlineThickness(2);
         buttonShape.setOutlineColor(sf::Color(160, 160, 160));
         window.draw(buttonShape);
@@ -40,7 +54,9 @@ public:
     bool handleClick(const sf::Vector2f& mousePos) {
         sf::FloatRect bounds(position.x, position.y, size.x, size.y);
         if (bounds.contains(mousePos)) {
-            isSelected = !isSelected;
+            if (!useFixedColor) {
+                isSelected = !isSelected; // משנה מצב רק אם לא משתמשים בצבע קבוע
+            }
             return true;
         }
         return false;

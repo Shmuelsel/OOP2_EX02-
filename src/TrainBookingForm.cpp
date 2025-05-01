@@ -141,9 +141,9 @@ void TrainBookingForm::render(sf::RenderWindow& window) {
     window.draw(cancelText);
 }
 
-const std::vector<std::unique_ptr<FieldBase>>& TrainBookingForm::getFields() const{
-    return fields; // מחזיר רפרנס לווקטור
-}
+//const std::vector<std::unique_ptr<FieldBase>>& TrainBookingForm::getFields() const{
+//    return fields; // מחזיר רפרנס לווקטור
+//}
 //void TrainBookingForm::handleInput(sf::Event event) {
 //    if (event.type == sf::Event::TextEntered) {
 //        if (event.text.unicode == '\b' && !userInput[activeField].empty()) {

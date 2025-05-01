@@ -8,7 +8,7 @@ public:
     EventBookingForm(sf::RenderWindow& win, DialogueManager* manager);
     std::string getFormType() const override;
     void render(sf::RenderWindow& window) override;
-	const std::vector<std::unique_ptr<FieldBase>>& getFields() const override;
+	//const std::vector<std::unique_ptr<FieldBase>>& getFields() const override;
     //void handleInput(sf::Event event) override;
 private:
     std::string setDefaultValues() override;

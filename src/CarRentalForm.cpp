@@ -115,9 +115,9 @@ void CarRentalForm::render(sf::RenderWindow& window) {
     window.draw(cancelText);
 }
 
-const std::vector<std::unique_ptr<FieldBase>>& CarRentalForm::getFields() const {
-    return fields; // מחזיר רפרנס לווקטור
-}
+//const std::vector<std::unique_ptr<FieldBase>>& CarRentalForm::getFields() const {
+//    return fields; // מחזיר רפרנס לווקטור
+//}
 
 //void CarRentalForm::handleInput(sf::Event event) {
 //    if (event.type == sf::Event::TextEntered) {

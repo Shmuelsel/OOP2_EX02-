@@ -7,6 +7,7 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 #include "Validator.h"
+#include "Button.h"
 
 class FieldBase {
 public:
@@ -130,14 +131,23 @@ private:
     std::string label;
     std::vector<std::string> value;
     std::vector<std::string> options;
-    std::vector<bool> selected;
+    std::vector<Button> buttons;
     std::vector<std::unique_ptr<Validator<std::vector<std::string>>>> validators;
 
 public:
-    Field(const std::string& label, const std::vector<std::string>& options)
-        : label(label), options(options), selected(options.size(), false) {
-        value = { "Don't Care" };
-        selected[options.size() - 1] = true; // ברירת מחדל: "Don't Care"
+    Field(const std::string& label, const std::vector<std::string>& options,
+        const std::vector<std::string>& defaultValue = {},
+        float startX = 10, float startY = 520, float buttonWidth = 150, float buttonHeight = 30)
+        : label(label), value(defaultValue), options(options) {
+        float buttonX = startX;
+        for (const auto& option : options) {
+            buttons.emplace_back(option, buttonX, startY, buttonWidth, buttonHeight);
+            buttonX += buttonWidth + 10; // מרווח של 10 פיקסלים
+        }
+        // עדכון מצב הכפתורים בהתאם לערך ברירת מחדל
+        for (size_t i = 0; i < options.size(); ++i) {
+            buttons[i].setSelected(std::find(value.begin(), value.end(), options[i]) != value.end());
+        }
     }
 
     void addValidator(std::unique_ptr<Validator<std::vector<std::string>>> validator) {
@@ -147,51 +157,53 @@ public:
     void render(sf::RenderWindow& window, const sf::Font& font, float x, float y, bool isActive, bool cursorVisible) const override {
         sf::Text labelText(label, font, 18);
         labelText.setFillColor(sf::Color(60, 60, 60));
+        labelText.setStyle(sf::Text::Bold);
         labelText.setPosition(x, y);
         window.draw(labelText);
 
-        float buttonX = x + 220;
-        for (size_t i = 0; i < options.size(); ++i) {
-            sf::RectangleShape button(sf::Vector2f(100, 30));
-            button.setPosition(buttonX, y);
-            button.setFillColor(selected[i] ? sf::Color(0, 120, 255) : sf::Color::White);
-            button.setOutlineThickness(2);
-            button.setOutlineColor(sf::Color(160, 160, 160));
-            window.draw(button);
-
-            sf::Text optionText(options[i], font, 16);
-            optionText.setFillColor(selected[i] ? sf::Color::White : sf::Color::Black);
-            optionText.setPosition(buttonX + 10, y + 5);
-            window.draw(optionText);
-            buttonX += 110;
+        for (const auto& button : buttons) {
+            button.render(window, font);
         }
+
+        std::string valueText = getValueAsString();
+        sf::Text valueDisplay(valueText, font, 16);
+        valueDisplay.setFillColor(sf::Color::Black);
+        valueDisplay.setPosition(x + 220, y);
+        window.draw(valueDisplay);
     }
 
     void handleInput(sf::Event event) override {
         if (event.type == sf::Event::MouseButtonPressed) {
             sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
-            float buttonX = 240;
-            for (size_t i = 0; i < options.size(); ++i) {
-                sf::FloatRect bounds(buttonX, 60 + (options.size() - 1) * 50, 100, 30);
-                if (bounds.contains(mousePos)) {
+            value.clear();
+            for (size_t i = 0; i < buttons.size(); ++i) {
+                if (buttons[i].handleClick(mousePos)) {
                     if (options[i] == "Don't Care") {
-                        selected = std::vector<bool>(options.size(), false);
-                        selected[i] = true;
+                        // בטל את כל הבחירות האחרות
+                        for (auto& button : buttons) {
+                            button.setSelected(false);
+                        }
+                        buttons[i].setSelected(true);
                         value = { "Don't Care" };
                     }
                     else {
-                        selected[options.size() - 1] = false; // בטל "Don't Care"
-                        selected[i] = !selected[i];
-                        value.clear();
+                        // בטל את "Don't Care" אם קיים
                         for (size_t j = 0; j < options.size(); ++j) {
-                            if (selected[j]) {
+                            if (options[j] == "Don't Care") {
+                                buttons[j].setSelected(false);
+                            }
+                        }
+                        // עדכן את הבחירה
+                        buttons[i].setSelected(!buttons[i].getSelected());
+                        // עדכן את value
+                        for (size_t j = 0; j < buttons.size(); ++j) {
+                            if (buttons[j].getSelected()) {
                                 value.push_back(options[j]);
                             }
                         }
                     }
                     return;
                 }
-                buttonX += 110;
             }
         }
     }
@@ -202,7 +214,7 @@ public:
             if (i > 0) result += "| ";
             result += value[i];
         }
-        return result;
+        return result.empty() ? "None" : result;
     }
 
     const std::vector<std::string>& getValue() const {
@@ -223,16 +235,38 @@ public:
         return errors;
     }
 
-	void setValue(const std::vector<std::string>& newValue) {
-		value = newValue;
-		selected = std::vector<bool>(options.size(), false);
-		for (const auto& val : newValue) {
-			auto it = std::find(options.begin(), options.end(), val);
-			if (it != options.end()) {
-				selected[std::distance(options.begin(), it)] = true;
-			}
-		}
-	}
+    void setValue(const std::vector<std::string>& newValue) {
+        value = newValue;
+        for (auto& button : buttons) {
+            button.setSelected(false);
+        }
+        for (const auto& val : newValue) {
+            auto it = std::find(options.begin(), options.end(), val);
+            if (it != options.end()) {
+                buttons[std::distance(options.begin(), it)].setSelected(true);
+            }
+        }
+    }
+
+    void setValueFromString(const std::string& str) override {
+        std::vector<std::string> newValue;
+        if (str != "None") {
+            std::string current;
+            for (char c : str) {
+                if (c == '|' && !current.empty()) {
+                    newValue.push_back(current);
+                    current.clear();
+                }
+                else {
+                    current += c;
+                }
+            }
+            if (!current.empty()) {
+                newValue.push_back(current);
+            }
+        }
+        setValue(newValue);
+    }
 };
 
 #endif
