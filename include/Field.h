@@ -138,6 +138,7 @@ private:
     float startX, startY, buttonWidth, buttonHeight;
 
 public:
+
     Field(const std::string& label, const std::vector<std::string>& options,
         const std::vector<std::string>& defaultValue = {},
         float startX = 10, float startY = 520, float buttonWidth = 150, float buttonHeight = 30)
@@ -158,26 +159,50 @@ public:
         validators.push_back(std::move(validator));
     }
 
+
+    /*sf::Text labelText(label, font, 18);
+    labelText.setFillColor(sf::Color(60, 60, 60));
+    labelText.setPosition(x, y);
+    window.draw(labelText);
+
+    
+}*/
+
     void render(sf::RenderWindow& window, const sf::Font& font, float x, float y, bool isActive, bool cursorVisible) const override {
         sf::Text labelText(label, font, 18);
         labelText.setFillColor(sf::Color(60, 60, 60));
-        labelText.setStyle(sf::Text::Bold);
-        labelText.setPosition(startX, startY - 30);
+        labelText.setPosition(x, y);
         window.draw(labelText);
+
+        sf::RectangleShape inputBox(sf::Vector2f(350, 35));
+        inputBox.setPosition(240, y - 5);
+        inputBox.setFillColor(sf::Color::White);
+        inputBox.setOutlineThickness(2);
+        inputBox.setOutlineColor(isActive ? sf::Color(0, 120, 255) : sf::Color(160, 160, 160));
+        window.draw(inputBox);
+
+        std::string displayText = getValueAsString();
+        if (isActive && cursorVisible) displayText += "|";
+
+        sf::Text inputText(displayText, font, 16);
+        inputText.setFillColor(sf::Color::Black);
+        inputText.setPosition(245, y);
+        window.draw(inputText);
 
         for (const auto& button : buttons) {
             button.render(window, font);
         }
 
-        std::string valueText = getValueAsString();
+        /*std::string valueText = getValueAsString();
         sf::Text valueDisplay(valueText, font, 16);
         valueDisplay.setFillColor(sf::Color::Black);
         valueDisplay.setPosition(startX, startY + buttonHeight + 10);
-        window.draw(valueDisplay);
+        window.draw(valueDisplay);*/
     }
 
     void handleInput(sf::Event event) override {
         // אין טיפול בקלט טקסטואלי עבור שדה בחירה מרובה
+
     }
 
     void handleClick(const sf::Vector2f& mousePos) override {

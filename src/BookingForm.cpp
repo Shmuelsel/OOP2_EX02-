@@ -25,8 +25,8 @@ void BookingForm::initializeFields() {
 	fields.push_back(std::make_unique<Field<std::string>>("Address:"));
 	fields.push_back(std::make_unique<Field<std::string>>("Email:"));
 
-    buttons.push_back(Button("Done", 20, 570, 140, 40, sf::Color(50,150,50)));
-    buttons.push_back(Button("Cancel", 200, 570, 140, 40, sf::Color(180,0,0)));
+    buttons.push_back(Button("DONE", 20, 570, 140, 40, sf::Color(50,150,50)));
+    buttons.push_back(Button("CANCEL", 200, 570, 140, 40, sf::Color(180,0,0)));
 }
 
 void BookingForm::openConfirmationWindow() {
@@ -38,9 +38,8 @@ void BookingForm::openConfirmationWindow() {
 
     bool approved = false;
 
-    std::unique_ptr<Button> approveButton = std::make_unique<Button>("Approve", 100, 300, 120, 40, sf::Color::Green);
-    std::unique_ptr<Button> cancelButton = std::make_unique<Button>("Cancel", 280, 300, 120, 40, sf::Color::Red);
-
+    std::unique_ptr<Button> approveButton = std::make_unique<Button>("Approve", 100, 300, 120, 40, sf::Color(50,150,50));
+    std::unique_ptr<Button> cancelButton = std::make_unique<Button>("Cancel", 280, 300, 120, 40, sf::Color(180,0,0));
 
     while (confirmWindow.isOpen()) {
         sf::Event event;
@@ -81,7 +80,6 @@ void BookingForm::openConfirmationWindow() {
         details.setFillColor(sf::Color::Black);
         details.setPosition(50, 80);
         confirmWindow.draw(details);
-
 		
 		approveButton->render(confirmWindow, font);
 		cancelButton->render(confirmWindow, font);
@@ -122,11 +120,11 @@ void BookingForm::handleInput(sf::Event event) {
             // טיפול בלחיצות על כפתורי Done ו-Cancel
             for (auto& button : buttons) {
                 if (button.handleClick(mousePos)) {
-                    if (button.getText() == "Done") {
+                    if (button.getText() == "DONE") {
                         openConfirmationWindow();
                         return;
                     }
-                    else if (button.getText() == "Cancel") {
+                    else if (button.getText() == "CANCEL") {
                         std::cout << "Cancelled " << getFormType() << std::endl;
                         formManager->closeForm();
                         return;
@@ -153,6 +151,7 @@ void BookingForm::handleInput(sf::Event event) {
         std::cerr << "Unknown exception in BookingForm::handleInput" << std::endl;
     }
 }
+
 void BookingForm::renderCommon(sf::RenderWindow& window) {
 	sf::Font font;
 	font.loadFromFile("C:/Windows/Fonts/arialbd.ttf");

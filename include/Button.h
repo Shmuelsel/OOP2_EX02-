@@ -36,20 +36,28 @@ public:
     void render(sf::RenderWindow& window, const sf::Font& font) const {
         sf::RectangleShape buttonShape(size);
         buttonShape.setPosition(position);
-		sf::Text buttonText(text, font, 24);
-        buttonText.setOrigin(buttonText.getLocalBounds().width / 2, buttonText.getLocalBounds().height / 2);
-        buttonText.setPosition(position.x + size.x / 2, position.y + size.y / 2);
+		sf::Text buttonText;
+        
         if (useFixedColor) {
             buttonShape.setFillColor(fixedColor);
-            buttonText.setFillColor(sf::Color(255,255,255));
+            buttonText.setFillColor(sf::Color::White);
+            buttonText.setString(text);
+            buttonText.setFont(font);
+            buttonText.setCharacterSize(24);
         }
         else {
-            buttonShape.setFillColor(sf::Color(0, 0, 255));
+            buttonShape.setFillColor(sf::Color::White);
             buttonText.setFillColor(isSelected ? textSelectedColor : textUnselectedColor);
-        }        
-        //buttonShape.setOutlineThickness(2);
-        //buttonShape.setOutlineColor(sf::Color(160, 160, 160));
- 
+			buttonText.setString(text);
+			buttonText.setFont(font);
+			buttonText.setCharacterSize(16);
+			buttonShape.setOutlineThickness(2);
+			buttonShape.setOutlineColor(sf::Color(160,160,160));
+			buttonShape.setFillColor(isSelected ? selectedColor : unselectedColor);
+        }   
+        buttonText.setOrigin(buttonText.getLocalBounds().width / 2, buttonText.getLocalBounds().height / 2);
+        buttonText.setPosition(position.x + size.x / 2, position.y + size.y / 2);
+       
         window.draw(buttonShape);
         window.draw(buttonText);
     }
@@ -57,8 +65,8 @@ public:
     bool handleClick(const sf::Vector2f& mousePos) {
         sf::FloatRect bounds(position.x, position.y, size.x, size.y);
         if (bounds.contains(mousePos)) {
-            if (!useFixedColor) {
-                isSelected = !isSelected; // משנה מצב רק אם לא משתמשים בצבע קבוע
+            if (useFixedColor) {
+                isSelected = !isSelected;
             }
             return true;
         }
