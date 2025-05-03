@@ -34,7 +34,8 @@ protected:
     bool handleCommonInput(sf::Event event);
     bool showCursor = true;
 	std::vector<Button> buttons;
-    
+	virtual std::string validateForm() const = 0;
+	//void validateFields();
 
 public:
     BookingForm(sf::RenderWindow& win, DialogueManager* manager);

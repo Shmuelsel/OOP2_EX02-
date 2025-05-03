@@ -178,3 +178,14 @@ void EventBookingForm::render(sf::RenderWindow& window) {
 //        }
 //    }
 //}
+
+std::string EventBookingForm::validateForm() const {
+	std::string errorMessage;
+	/*for (const auto& field : fields) {
+		if (!field->isValid()) {
+			errorMessage = field->getErrorMessage();
+			break;
+		}
+	}*/
+	return errorMessage;
+}

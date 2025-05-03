@@ -12,7 +12,7 @@ public:
 	void initializeFields();
     std::string getFormType() const override;
     void render(sf::RenderWindow& window) override;
-    //void handleInput(sf::Event event) override;
+	std::string validateForm() const override;
 };
 
 #endif

@@ -20,73 +20,180 @@ std::string BookingForm::setDefaultDate() {
 }
 
 void BookingForm::initializeFields() {
-	fields.push_back(std::make_unique<Field<std::string>>("Name:"));
-	fields.push_back(std::make_unique<Field<std::string>>("ID:"));
-	fields.push_back(std::make_unique<Field<std::string>>("Address:"));
-	fields.push_back(std::make_unique<Field<std::string>>("Email:"));
+	fields.push_back(std::make_unique<Field<std::string>>("Name:", "", std::make_unique<NameValidator>()));
+	fields.push_back(std::make_unique<Field<std::string>>("ID:", "", std::make_unique<IDValidator>()));
+	fields.push_back(std::make_unique<Field<std::string>>("Address:", "", std::make_unique<AddressValidator>()));
+	fields.push_back(std::make_unique<Field<std::string>>("Email:", "", std::make_unique<EmailValidator>()));
 
     buttons.push_back(Button("DONE", 20, 570, 140, 40, sf::Color(50,150,50)));
     buttons.push_back(Button("CANCEL", 200, 570, 140, 40, sf::Color(180,0,0)));
 }
 
 void BookingForm::openConfirmationWindow() {
-    const std::string& formTitle = getFormType();
-    sf::RenderWindow confirmWindow(sf::VideoMode(500, 600), "Confirm " + formTitle);
+  //  const std::string& formTitle = getFormType();
+  //  sf::RenderWindow confirmWindow(sf::VideoMode(500, 600), "Confirm " + formTitle);
 
+  //  sf::Font font;
+  //  font.loadFromFile("C:/Windows/Fonts/arialbd.ttf");
+
+  //  bool approved = false;
+
+  //  std::unique_ptr<Button> approveButton = std::make_unique<Button>("Approve", 100, 300, 120, 40, sf::Color(50,150,50));
+  //  std::unique_ptr<Button> cancelButton = std::make_unique<Button>("Cancel", 280, 300, 120, 40, sf::Color(180,0,0));
+
+  //  while (confirmWindow.isOpen()) {
+  //      sf::Event event;
+
+  //      while (confirmWindow.pollEvent(event)) {
+  //          if (event.type == sf::Event::Closed)
+  //              confirmWindow.close();
+
+  //          if (event.type == sf::Event::MouseButtonPressed) {
+  //              sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
+
+  //              if (approveButton->handleClick(mousePos)) {
+		//			//validateFields();
+  //                  std::cout << formTitle << " Confirmed! Returning to main menu." << std::endl;
+  //                  approved = true;
+  //                  confirmWindow.close();
+
+  //              }
+  //              else if (cancelButton->handleClick(mousePos)) {
+  //                  std::cout << formTitle << " Cancelled! Returning to main menu." << std::endl;
+  //                  confirmWindow.close();
+  //              }
+  //          }
+  //      }
+  //      confirmWindow.clear(sf::Color(240, 240, 240));
+
+  //      sf::Text title("Confirm " + formTitle, font, 22);
+  //      title.setFillColor(sf::Color::Black);
+  //      title.setStyle(sf::Text::Bold);
+  //      title.setPosition(130, 20);
+  //      confirmWindow.draw(title);
+
+  //      std::string bookingInfo;
+  //      for (size_t i = 0; i < fields.size(); ++i) {
+  //          bookingInfo += fields[i]->getLabel() + " " + fields[i]->getValueAsString() + "\n";
+  //      }
+
+  //      sf::Text details(bookingInfo, font, 18);
+  //      details.setFillColor(sf::Color::Black);
+  //      details.setPosition(50, 80);
+  //      confirmWindow.draw(details);
+		//
+		//approveButton->render(confirmWindow, font);
+		//cancelButton->render(confirmWindow, font);
+  //      confirmWindow.display();
+  //  }
+
+  //  if (approved) {
+  //      formManager->closeForm();
+  //  }
+
+    sf::RenderWindow confirmWindow(sf::VideoMode(600, 650), "Confirm", sf::Style::Titlebar | sf::Style::Close);
     sf::Font font;
     font.loadFromFile("C:/Windows/Fonts/arialbd.ttf");
 
+    sf::Text title("Confirm", font, 24);
+    title.setFillColor(sf::Color::Black);
+    title.setPosition(250, 20);
+
+    std::vector<sf::Text> fieldTexts;
+    std::vector<sf::Text> errorTexts;
+    float yPos = 70;
+    bool hasError = false;
+    // הצגת השדות והשגיאות
+    for (size_t i = 0; i < fields.size(); ++i) {
+        std::string fieldDisplay = fields[i]->getLabel() + " " + fields[i]->getValueAsString();
+        sf::Text fieldText(fieldDisplay, font, 16);
+        fieldText.setFillColor(sf::Color::Black);
+        fieldText.setPosition(50, yPos);
+        fieldTexts.push_back(fieldText);
+
+        // בדוק אם יש שגיאה עבור השדה הזה
+        
+         if(fields[i]->validate() != "") {
+                std::string errorMsg = fields[i]->validate(); // הסר את ה-label מהשגיאה
+                sf::Text errorText(errorMsg, font, 14);
+                errorText.setFillColor(sf::Color::Red);
+                errorText.setPosition(50, yPos + 20);
+                errorTexts.push_back(errorText);
+                hasError = true;
+                
+            
+        }
+
+        yPos += hasError ? 50 : 30; // תוספת מרווח אם יש שגיאה
+    }
+
+    // הוספת קו מפריד
+    sf::Text separator("****************************", font, 16);
+    separator.setFillColor(sf::Color::Black);
+    separator.setPosition(50, yPos);
+    yPos += 30;
+
+    // ולידציה כללית של הטופס
+    std::string formError = validateForm();
+    sf::Text formValidatorTitle("Form validators:", font, 16);
+    formValidatorTitle.setFillColor(sf::Color::Black);
+    formValidatorTitle.setPosition(50, yPos);
+    yPos += 20;
+
+    sf::Text formErrorText(formError, font, 14);
+    formErrorText.setFillColor(sf::Color::Red);
+    formErrorText.setPosition(50, yPos);
+    yPos += 30;
+
+    Button approveButton("APPROVE", 150, yPos, 100, 40, sf::Color(160,160,160));
+    Button cancelButton("CANCEL", 350, yPos, 100, 40, sf::Color(0,0,180));
+
     bool approved = false;
-
-    std::unique_ptr<Button> approveButton = std::make_unique<Button>("Approve", 100, 300, 120, 40, sf::Color(50,150,50));
-    std::unique_ptr<Button> cancelButton = std::make_unique<Button>("Cancel", 280, 300, 120, 40, sf::Color(180,0,0));
-
     while (confirmWindow.isOpen()) {
         sf::Event event;
-
         while (confirmWindow.pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
+            if (event.type == sf::Event::Closed) {
                 confirmWindow.close();
-
-            if (event.type == sf::Event::MouseButtonPressed) {
+            }
+            else if (event.type == sf::Event::MouseButtonPressed) {
                 sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
-
-                if (approveButton->handleClick(mousePos)) {
-                    std::cout << formTitle << " Confirmed! Returning to main menu." << std::endl;
+                if (approveButton.handleClick(mousePos)) {
+                    if (hasError) {
+                        confirmWindow.close();
+                    }
+                    else {
                     approved = true;
-                    confirmWindow.close();
-
                 }
-                else if (cancelButton->handleClick(mousePos)) {
-                    std::cout << formTitle << " Cancelled! Returning to main menu." << std::endl;
+                    confirmWindow.close();
+                }
+                else if (cancelButton.handleClick(mousePos)) {
+                    approved = false;
                     confirmWindow.close();
                 }
             }
         }
-        confirmWindow.clear(sf::Color(240, 240, 240));
 
-        sf::Text title("Confirm " + formTitle, font, 22);
-        title.setFillColor(sf::Color::Black);
-        title.setStyle(sf::Text::Bold);
-        title.setPosition(130, 20);
+        confirmWindow.clear(sf::Color::White);
         confirmWindow.draw(title);
-
-        std::string bookingInfo;
-        for (size_t i = 0; i < fields.size(); ++i) {
-            bookingInfo += fields[i]->getLabel() + " " + fields[i]->getValueAsString() + "\n";
+        for (const auto& text : fieldTexts) {
+            confirmWindow.draw(text);
         }
-
-        sf::Text details(bookingInfo, font, 18);
-        details.setFillColor(sf::Color::Black);
-        details.setPosition(50, 80);
-        confirmWindow.draw(details);
-		
-		approveButton->render(confirmWindow, font);
-		cancelButton->render(confirmWindow, font);
+        for (const auto& text : errorTexts) {
+            confirmWindow.draw(text);
+        }
+        confirmWindow.draw(separator);
+        confirmWindow.draw(formValidatorTitle);
+        if (!formError.empty()) {
+            confirmWindow.draw(formErrorText);
+        }
+        approveButton.render(confirmWindow, font);
+        cancelButton.render(confirmWindow, font);
         confirmWindow.display();
     }
 
+    // אם המשתמש לחץ על APPROVE, תוכל להוסיף כאן קוד להמשך הפעולה
     if (approved) {
+        // לדוגמה: שמירת ההזמנה
         formManager->closeForm();
     }
 }

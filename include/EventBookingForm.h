@@ -14,6 +14,9 @@ private:
     //std::string setDefaultValues() override;
     std::array<std::string, 5> SeatingTypeSelection = { "General Admission", "Front Row", "VIP Section", "Aisle Seat" };
     int selectedSeatingType = 0;
+	//void initializeFields() override;
+	std::string validateForm() const override;
+	
 };
 
 #endif // EVENTBOOKINGFORM_H

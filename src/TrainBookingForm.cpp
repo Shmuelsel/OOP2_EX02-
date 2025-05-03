@@ -234,3 +234,20 @@ void TrainBookingForm::render(sf::RenderWindow& window) {
 //        }
 //    }
 //}
+
+std::string TrainBookingForm::validateForm() const {
+	std::string errorMessage;
+	std::string depStation;
+	std::string arrStation;
+	for (const auto& field : fields) {
+		if (field->getLabel() == "Departure Station:") {
+			depStation = field->getValueAsString();
+		}
+		else if (field->getLabel() == "Arrival Station:") {
+			arrStation = field->getValueAsString();
+		}
+	}
+	if (depStation == arrStation) {
+		return "Departure and Arrival stations cannot be the same.";
+	}
+}

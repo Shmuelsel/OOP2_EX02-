@@ -15,9 +15,10 @@ public:
     virtual void handleInput(sf::Event event) = 0;
     virtual std::string getValueAsString() const = 0;
     virtual std::string getLabel() const = 0;
+	virtual std::string validate() const = 0;
     virtual void setValueFromString(const std::string& str) = 0;
-    virtual std::vector<std::string> validate() const = 0;
-    virtual void handleClick(const sf::Vector2f& mousePos) = 0; // פונקציה חדשה לטיפול בלחיצות
+//    virtual std::::string validate() const = 0;
+    virtual void handleClick(const sf::Vector2f& mousePos) = 0;
 };
 
 template <typename T>
@@ -25,15 +26,11 @@ class Field : public FieldBase {
 private:
     std::string label;
     T value;
-    std::vector<std::unique_ptr<Validator<T>>> validators;
+    std::unique_ptr<Validator<T>> validator; // ניהול זיכרון אוטומטי
 
 public:
-    Field(const std::string& label, const T& defaultValue = T())
-        : label(label), value(defaultValue) {
-    }
-
-    void addValidator(std::unique_ptr<Validator<T>> validator) {
-        validators.push_back(std::move(validator));
+    Field(const std::string& label, const T& defaultValue, std::unique_ptr<Validator<T>> validator)
+        : label(label), value(defaultValue), validator(std::move(validator)) {
     }
 
     void render(sf::RenderWindow& window, const sf::Font& font, float x, float y, bool isActive, bool cursorVisible) const override {
@@ -111,19 +108,24 @@ public:
         return label;
     }
 
-    std::vector<std::string> validate() const override {
+    /*std::vector<std::string> validate() const override {
         std::vector<std::string> errors;
-        for (const auto& validator : validators) {
-            if (!validator->validate(value)) {
-                errors.push_back(label + ": " + validator->getErrorMessage());
-            }
+        if (validator && !validator->validate(value)) {
+            errors.push_back(label + ": " + validator->getErrorMessage());
         }
         return errors;
-    }
+    }*/
 
     void setValue(const T& newValue) {
         value = newValue;
     }
+
+	std::string validate() const override {
+		if (validator && !validator->validate(value)) {
+			return label + ": " + validator->getErrorMessage();
+		}
+		return "";
+	}
 };
 
 // Specialization עבור שדה בחירה מרובה (כמו Room Type)
@@ -134,18 +136,16 @@ private:
     std::vector<std::string> value;
     std::vector<std::string> options;
     std::vector<Button> buttons;
-    std::vector<std::unique_ptr<Validator<std::vector<std::string>>>> validators;
+    std::unique_ptr<Validator<std::vector<std::string>>> validator;
     float startX, startY, buttonWidth, buttonHeight;
 
 public:
-
     Field(const std::string& label, const std::vector<std::string>& options,
-        const std::vector<std::string>& defaultValue = {},
+        const std::vector<std::string>& defaultValue, std::unique_ptr<Validator<std::vector<std::string>>> validator,
         float startX = 10, float startY = 520, float buttonWidth = 150, float buttonHeight = 30)
         : label(label), value(defaultValue), options(options),
-        startX(startX), startY(startY), buttonWidth(buttonWidth), buttonHeight(buttonHeight) {
+        startX(startX), startY(startY), buttonWidth(buttonWidth), buttonHeight(buttonHeight), validator(std::move(validator)) {
         float buttonX = startX;
-
         for (const auto& option : options) {
             buttons.emplace_back(option, buttonX, startY, buttonWidth, buttonHeight);
             buttonX += buttonWidth + 10;
@@ -154,19 +154,6 @@ public:
             buttons[i].setSelected(std::find(value.begin(), value.end(), options[i]) != value.end());
         }
     }
-
-    void addValidator(std::unique_ptr<Validator<std::vector<std::string>>> validator) {
-        validators.push_back(std::move(validator));
-    }
-
-
-    /*sf::Text labelText(label, font, 18);
-    labelText.setFillColor(sf::Color(60, 60, 60));
-    labelText.setPosition(x, y);
-    window.draw(labelText);
-
-    
-}*/
 
     void render(sf::RenderWindow& window, const sf::Font& font, float x, float y, bool isActive, bool cursorVisible) const override {
         sf::Text labelText(label, font, 18);
@@ -192,17 +179,10 @@ public:
         for (const auto& button : buttons) {
             button.render(window, font);
         }
-
-        /*std::string valueText = getValueAsString();
-        sf::Text valueDisplay(valueText, font, 16);
-        valueDisplay.setFillColor(sf::Color::Black);
-        valueDisplay.setPosition(startX, startY + buttonHeight + 10);
-        window.draw(valueDisplay);*/
     }
 
     void handleInput(sf::Event event) override {
         // אין טיפול בקלט טקסטואלי עבור שדה בחירה מרובה
-
     }
 
     void handleClick(const sf::Vector2f& mousePos) override {
@@ -252,15 +232,12 @@ public:
         return label;
     }
 
-    std::vector<std::string> validate() const override {
-        std::vector<std::string> errors;
-        for (const auto& validator : validators) {
-            if (!validator->validate(value)) {
-                errors.push_back(label + ": " + validator->getErrorMessage());
-            }
-        }
-        return errors;
-    }
+	std::string validate() const override {
+		if (validator && !validator->validate(value)) {
+			return label + ": " + validator->getErrorMessage();
+		}
+		return "";
+	}
 
     void setValue(const std::vector<std::string>& newValue) {
         value = newValue;

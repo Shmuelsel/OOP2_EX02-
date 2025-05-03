@@ -12,6 +12,7 @@ public:
 	
 private:
 	void initializeFields() override;
+	std::string validateForm() const override;
 };
 
 #endif // CARRENTALFORM_H

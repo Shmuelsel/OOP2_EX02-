@@ -25,6 +25,8 @@ private:
         std::make_pair("First Class", false) ,
         std::make_pair("None", true)
     };
+
+	std::string validateForm() const override;
 };
 
 #endif // TRAINBOOKINGFORM_H

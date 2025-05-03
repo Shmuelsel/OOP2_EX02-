@@ -11,12 +11,11 @@ FlightBookingForm::FlightBookingForm(sf::RenderWindow& win, DialogueManager* man
     
 void FlightBookingForm::initializeFields() {
 
-	fields.push_back(std::make_unique<Field<std::string>>("Departure Airport:"));
-	fields.push_back(std::make_unique<Field<std::string>>("Arrival Airport:"));
-	fields.push_back(std::make_unique<Field<std::string>>("Departure Date:", setDefaultDate()));
-	//fields.push_back(std::make_unique<Field<std::string>>("Preferred Time:", "Don't Care"));
-	
-	std::vector<std::string> timeOptions = {
+	fields.push_back(std::make_unique<Field<std::string>>("Departure Airport:", "", std::make_unique<NameValidator>()));
+	fields.push_back(std::make_unique<Field<std::string>>("Arrival Airport:", "", std::make_unique<NameValidator>()));
+	fields.push_back(std::make_unique<Field<std::string>>("Departure Date:", setDefaultDate(), std::make_unique<DateValidator>()));
+
+	std::vector<std::string> preferredTimeOptions = {
 		"Morning",
 		"Noon",
 		"Evening",
@@ -25,8 +24,9 @@ void FlightBookingForm::initializeFields() {
 	};
 
 	fields.push_back(std::make_unique<Field<std::vector<std::string>>>(
-		"Preferred Time:", timeOptions, std::vector<std::string>{"Don't Care"},
-		10, 480, 100, 30
+		"Preferred Time:", preferredTimeOptions, std::vector<std::string>{"Don't Care"},
+		std::make_unique<MultiChoiceValidator>(preferredTimeOptions),
+		10, 520, 150, 30
 	));
 }
 
@@ -35,4 +35,22 @@ std::string FlightBookingForm::getFormType() const {
 }
 
 void FlightBookingForm::render(sf::RenderWindow& window) {
+}
+
+std::string FlightBookingForm::validateForm() const {
+	std::string errorMessage;
+	std::string depAirport;
+	std::string arrAirport;
+	for (const auto& field : fields) {
+		if (field->getLabel() == "Departure Airport:") {
+			depAirport = field->getValueAsString();
+		}
+		else if (field->getLabel() == "Arrival Airport:") {
+			arrAirport = field->getValueAsString();
+		}
+	}
+
+	if (depAirport == arrAirport) {
+		return "Departure and Arrival airports cannot be the same.";
+	}
 }
