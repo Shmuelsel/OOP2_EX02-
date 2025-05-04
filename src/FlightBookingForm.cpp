@@ -26,7 +26,7 @@ void FlightBookingForm::initializeFields() {
 	fields.push_back(std::make_unique<Field<std::vector<std::string>>>(
 		"Preferred Time:", preferredTimeOptions, std::vector<std::string>{"Don't Care"},
 		std::make_unique<MultiChoiceValidator>(preferredTimeOptions),
-		10, 520, 150, 30
+		10, 520, 100, 30
 	));
 }
 
