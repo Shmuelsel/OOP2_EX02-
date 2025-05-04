@@ -14,7 +14,7 @@ void HotelBookingForm::initializeFields() {
 	fields.push_back(std::make_unique<Field<std::string>>("Hotel Name:", "", std::make_unique<NameValidator>()));
 	fields.push_back(std::make_unique<Field<std::string>>("Check-in Date:", setDefaultDate(), std::make_unique<DateValidator>()));
 	fields.push_back(std::make_unique<Field<std::string>>("Check-out Date:", setDefaultDate(), std::make_unique<DateValidator>()));
-	fields.push_back(std::make_unique<Field<int>>("Number of Guests:", 0, std::make_unique<RangeValidator<int>>(1, 10)));
+	fields.push_back(std::make_unique<Field<int>>("Number of Guests:", 0, std::make_unique<RangeValidator<int>>(1, 15)));
 
 	std::vector<std::string> roomOptions = {
 		"Single Room",
@@ -26,7 +26,7 @@ void HotelBookingForm::initializeFields() {
 	fields.push_back(std::make_unique<Field<std::vector<std::string>>>(
 		"Room Type:", roomOptions, std::vector<std::string>{"Single Room"},
 		std::make_unique<MultiChoiceValidator>(roomOptions),
-		10, 520, 150, 30
+		10, 520, 150, 30, false
 	));
 }
 
@@ -55,4 +55,8 @@ std::string HotelBookingForm::validateForm() const {
 		return "Check-out date must be after check-in date.";
 	}
 	return errorMessage;
+
+	//single room - 1 person, double room - 2 people, family room - any people, presidential suite - 6 people
+
+	
 }
