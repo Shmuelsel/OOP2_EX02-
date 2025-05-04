@@ -13,7 +13,7 @@ BookingForm::BookingForm(sf::RenderWindow& win, DialogueManager* manager) :windo
 std::string BookingForm::setDefaultDate() {
 	time_t now = time(0);
 	tm ltm;
-	localtime_s(&ltm, &now);  // Safe alternative to localtime()
+	localtime_s(&ltm, &now);
 	return std::to_string(1900 + ltm.tm_year) + "-" +
 		std::to_string(1 + ltm.tm_mon) + "-" +
 		std::to_string(ltm.tm_mday);
@@ -30,67 +30,6 @@ void BookingForm::initializeFields() {
 }
 
 void BookingForm::openConfirmationWindow() {
-  //  const std::string& formTitle = getFormType();
-  //  sf::RenderWindow confirmWindow(sf::VideoMode(500, 600), "Confirm " + formTitle);
-
-  //  sf::Font font;
-  //  font.loadFromFile("C:/Windows/Fonts/arialbd.ttf");
-
-  //  bool approved = false;
-
-  //  std::unique_ptr<Button> approveButton = std::make_unique<Button>("Approve", 100, 300, 120, 40, sf::Color(50,150,50));
-  //  std::unique_ptr<Button> cancelButton = std::make_unique<Button>("Cancel", 280, 300, 120, 40, sf::Color(180,0,0));
-
-  //  while (confirmWindow.isOpen()) {
-  //      sf::Event event;
-
-  //      while (confirmWindow.pollEvent(event)) {
-  //          if (event.type == sf::Event::Closed)
-  //              confirmWindow.close();
-
-  //          if (event.type == sf::Event::MouseButtonPressed) {
-  //              sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
-
-  //              if (approveButton->handleClick(mousePos)) {
-		//			//validateFields();
-  //                  std::cout << formTitle << " Confirmed! Returning to main menu." << std::endl;
-  //                  approved = true;
-  //                  confirmWindow.close();
-
-  //              }
-  //              else if (cancelButton->handleClick(mousePos)) {
-  //                  std::cout << formTitle << " Cancelled! Returning to main menu." << std::endl;
-  //                  confirmWindow.close();
-  //              }
-  //          }
-  //      }
-  //      confirmWindow.clear(sf::Color(240, 240, 240));
-
-  //      sf::Text title("Confirm " + formTitle, font, 22);
-  //      title.setFillColor(sf::Color::Black);
-  //      title.setStyle(sf::Text::Bold);
-  //      title.setPosition(130, 20);
-  //      confirmWindow.draw(title);
-
-  //      std::string bookingInfo;
-  //      for (size_t i = 0; i < fields.size(); ++i) {
-  //          bookingInfo += fields[i]->getLabel() + " " + fields[i]->getValueAsString() + "\n";
-  //      }
-
-  //      sf::Text details(bookingInfo, font, 18);
-  //      details.setFillColor(sf::Color::Black);
-  //      details.setPosition(50, 80);
-  //      confirmWindow.draw(details);
-		//
-		//approveButton->render(confirmWindow, font);
-		//cancelButton->render(confirmWindow, font);
-  //      confirmWindow.display();
-  //  }
-
-  //  if (approved) {
-  //      formManager->closeForm();
-  //  }
-
     sf::RenderWindow confirmWindow(sf::VideoMode(600, 650), "Confirm", sf::Style::Titlebar | sf::Style::Close);
     sf::Font font;
     font.loadFromFile("C:/Windows/Fonts/arialbd.ttf");
@@ -145,8 +84,8 @@ void BookingForm::openConfirmationWindow() {
     formErrorText.setPosition(50, yPos);
     yPos += 30;
 
-    Button approveButton("APPROVE", 150, yPos, 100, 40, sf::Color(160,160,160));
-    Button cancelButton("CANCEL", 350, yPos, 100, 40, sf::Color(0,0,180));
+    Button approveButton("APPROVE", 150, yPos, 100, 40, sf::Color(50,150,50));
+    Button cancelButton("CANCEL", 350, yPos, 100, 40, sf::Color(180,0,0));
 
     bool approved = false;
     while (confirmWindow.isOpen()) {
