@@ -25,6 +25,9 @@ protected:
 	std::vector<std::string> userInput;  //need to define the input fields
     PersonalInfo personalInfo;
 
+	sf::Font font;
+	sf::Text title;
+
     sf::RenderWindow& window;
     DialogueManager* formManager;
     std::vector<std::unique_ptr<FieldBase>> fields;
@@ -37,7 +40,7 @@ protected:
     bool showCursor = true;
 	std::vector<Button> buttons;
 	virtual std::string validateForm() const = 0;
-	//void validateFields();
+	void chackForErrors(std::vector<sf::Text>& fieldTexts, std::vector<sf::Text>& errorTexts, bool& hasError, float& yPos);
 
 public:
     BookingForm(sf::RenderWindow& win, DialogueManager* manager);

@@ -31,13 +31,12 @@ public:
 		labelText.setString(label);
 
 		inputBox.setSize(sf::Vector2f(350, 35));
-		inputBox.setFillColor(sf::Color::White);
+		inputBox.setFillColor(sf::Color::White);    
 		inputBox.setOutlineThickness(2);
 
 		inputText.setFont(font);
 		inputText.setCharacterSize(16);
 		inputText.setFillColor(sf::Color::Black);
-
     }
 
     void render(sf::RenderWindow& window, const sf::Font& font, float x, float y, bool isActive, bool cursorVisible) override {

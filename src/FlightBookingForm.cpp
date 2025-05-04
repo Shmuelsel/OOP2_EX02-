@@ -53,4 +53,7 @@ std::string FlightBookingForm::validateForm() const {
 	if (depAirport == arrAirport) {
 		return "Departure and Arrival airports cannot be the same.";
 	}
+	else {
+		return "";
+	}
 }

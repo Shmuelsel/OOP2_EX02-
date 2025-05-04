@@ -1,12 +1,22 @@
 ﻿#include "BookingForm.h"
 #include "DialogueManager.h"
 #include <iostream>
-#include <ctime>  // For getting current date
+#include <ctime>  
 #include "config.h"
 #include "Field.h"
 #include "Button.h"
 
-BookingForm::BookingForm(sf::RenderWindow& win, DialogueManager* manager) :window(win), formManager(manager) {	
+BookingForm::BookingForm(sf::RenderWindow& win, DialogueManager* manager) :window(win), formManager(manager) {
+
+    if (!font.loadFromFile("C:/Windows/Fonts/arialbd.ttf")) {
+        std::cerr << "Error: Failed to load font 'arialbd.ttf' in BookingForm!" << std::endl;
+    }
+
+    title.setFont(font);
+    title.setCharacterSize(26);
+    title.setFillColor(sf::Color(20, 20, 20));
+    title.setStyle(sf::Text::Bold);
+    title.setPosition(20, 10);
 	initializeFields();
 }
 
@@ -31,9 +41,7 @@ void BookingForm::initializeFields() {
 
 void BookingForm::openConfirmationWindow() {
     sf::RenderWindow confirmWindow(sf::VideoMode(600, 650), "Confirm", sf::Style::Titlebar | sf::Style::Close);
-    sf::Font font;
-    font.loadFromFile("C:/Windows/Fonts/arialbd.ttf");
-
+   
     sf::Text title("Confirm", font, 24);
     title.setFillColor(sf::Color::Black);
     title.setPosition(250, 20);
@@ -43,28 +51,7 @@ void BookingForm::openConfirmationWindow() {
     float yPos = 70;
     bool hasError = false;
     // הצגת השדות והשגיאות
-    for (size_t i = 0; i < fields.size(); ++i) {
-        std::string fieldDisplay = fields[i]->getLabel() + " " + fields[i]->getValueAsString();
-        sf::Text fieldText(fieldDisplay, font, 16);
-        fieldText.setFillColor(sf::Color::Black);
-        fieldText.setPosition(50, yPos);
-        fieldTexts.push_back(fieldText);
-
-        // בדוק אם יש שגיאה עבור השדה הזה
-        
-         if(fields[i]->validate() != "") {
-                std::string errorMsg = fields[i]->validate(); // הסר את ה-label מהשגיאה
-                sf::Text errorText(errorMsg, font, 14);
-                errorText.setFillColor(sf::Color::Red);
-                errorText.setPosition(50, yPos + 20);
-                errorTexts.push_back(errorText);
-                hasError = true;
-                
-            
-        }
-
-        yPos += hasError ? 50 : 30; // תוספת מרווח אם יש שגיאה
-    }
+	chackForErrors(fieldTexts, errorTexts, hasError, yPos);
 
     // הוספת קו מפריד
     sf::Text separator("****************************", font, 16);
@@ -130,9 +117,7 @@ void BookingForm::openConfirmationWindow() {
         confirmWindow.display();
     }
 
-    // אם המשתמש לחץ על APPROVE, תוכל להוסיף כאן קוד להמשך הפעולה
     if (approved) {
-        // לדוגמה: שמירת ההזמנה
         formManager->closeForm();
     }
 }
@@ -199,24 +184,38 @@ void BookingForm::handleInput(sf::Event event) {
 }
 
 void BookingForm::renderCommon(sf::RenderWindow& window) {
-	sf::Font font;
-	font.loadFromFile("C:/Windows/Fonts/arialbd.ttf");
-
-    sf::Text title(getFormType(), font, 26);
-    title.setFillColor(sf::Color(20, 20, 20));
-    title.setStyle(sf::Text::Bold);
-    title.setPosition(20, 10);
+	
+    title.setString(getFormType());
     window.draw(title);
 
     bool cursorVisible = (cursorTimer.getElapsedTime().asMilliseconds() % 1000 < 500);
 
-	for (std::size_t i = 0; i < fields.size(); ++i) {
-		fields[i]->render(window, font, 20, 60 + i * 50, i == activeField, showCursor);
-	}
+    for (std::size_t i = 0; i < fields.size(); ++i) {
+        fields[i]->render(window, font, 20, 60 + i * 50, i == activeField, cursorVisible);
+    }
 
-	for (auto& button : buttons) {
-		button.render(window, font);
-	}
+    for (auto& button : buttons) {
+        button.render(window, font);
+    }
 }
 
+void BookingForm::chackForErrors(std::vector<sf::Text>& fieldTexts, std::vector<sf::Text>& errorTexts, bool& hasError, float& yPos) {
+    for (size_t i = 0; i < fields.size(); ++i) {
+        std::string fieldDisplay = fields[i]->getLabel() + " " + fields[i]->getValueAsString();
+        sf::Text fieldText(fieldDisplay, font, 16);
+        fieldText.setFillColor(sf::Color::Black);
+        fieldText.setPosition(50, yPos);
+        fieldTexts.push_back(fieldText);
 
+        if (fields[i]->validate() != "") {
+            std::string errorMsg = fields[i]->validate(); 
+            sf::Text errorText(errorMsg, font, 14);
+            errorText.setFillColor(sf::Color::Red);
+            errorText.setPosition(50, yPos + 20);
+            errorTexts.push_back(errorText);
+            hasError = true;
+        }
+
+        yPos += hasError ? 50 : 30; 
+    }
+}
