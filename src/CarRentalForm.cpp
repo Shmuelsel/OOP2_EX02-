@@ -11,7 +11,7 @@ CarRentalForm::CarRentalForm(sf::RenderWindow& win, DialogueManager* manager)
 void CarRentalForm::initializeFields() {
     
 	fields.push_back(std::make_unique<Field<std::string>>("Name:", "", std::make_unique<NameValidator>()));
-	fields.push_back(std::make_unique<Field<std::string>>("ID:", "", std::make_unique<IDValidator>()));
+	fields.push_back(std::make_unique<Field<int>>("ID:", 0, std::make_unique<IDValidator>()));
 	fields.push_back(std::make_unique<Field<std::string>>("Address:", "", std::make_unique<AddressValidator>()));
 	fields.push_back(std::make_unique<Field<std::string>>("Email:", "", std::make_unique<EmailValidator>()));
 	fields.push_back(std::make_unique<Field<std::string>>("Pick-up Date:", setDefaultDate(), std::make_unique<DateValidator>()));

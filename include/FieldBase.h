@@ -15,6 +15,9 @@ public:
     virtual std::string validate() const = 0;
     virtual void setValueFromString(const std::string& str) = 0;
     virtual void handleClick(const sf::Vector2f& mousePos) = 0;
+	//virtual void setValue(const std::string& newValue) = 0;
+	//virtual  getValue() const;
+	//virtual void setValue(const std::string& newValue);
 };
 
 #endif // FIELD_BASE_H

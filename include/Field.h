@@ -59,21 +59,32 @@ public:
 
     void handleInput(sf::Event event) override {
         if (event.type == sf::Event::TextEntered) {
-            std::string currentValue = getValueAsString();
-            if (event.text.unicode == '\b' && !currentValue.empty()) {
-                currentValue.pop_back();
+            T currentValue = this->getValue();
+            if (event.text.unicode == '\b') {
+                if constexpr (std::is_same_v<T, int>) {
+                    currentValue = currentValue / 10;
+                }
+                else if constexpr (std::is_same_v<T, std::string>) {
+                    currentValue.pop_back();
+                }
             }
-            else if (event.text.unicode >= 32 && event.text.unicode < 128) {
-                currentValue += static_cast<char>(event.text.unicode);
+            else if(event.text.unicode >= 32 && event.text.unicode < 128) {
+                if constexpr (std::is_same_v<T, int>) {
+                    currentValue = currentValue * 10 + (event.text.unicode - '0');
+                }
+                else if constexpr(std::is_same_v<T, std::string>) {
+                    currentValue += static_cast<char>(event.text.unicode);
+                }
+                
             }
-            setValueFromString(currentValue);
+            setValue(currentValue);
         }
     }
 
     void handleClick(const sf::Vector2f& mousePos) override {
         // שדות רגילים (למשל, טקסט או מספרים) לא מטפלים בלחיצות
     }
-
+    
     std::string getValueAsString() const override {
         if constexpr (std::is_same_v<T, std::string>) {
             return value;
@@ -85,6 +96,10 @@ public:
             return value ? "Yes" : "No";
         }
         return "";
+    }
+
+    T getValue() {
+        return value;
     }
 
     void setValueFromString(const std::string& str) override {
@@ -102,16 +117,12 @@ public:
         }
     }
 
-    const T& getValue() const {
-        return value;
-    }
+	void setValue(const T newValue){
+		value = newValue;
+	}
 
     std::string getLabel() const override {
         return label;
-    }
-
-    void setValue(const T& newValue) {
-        value = newValue;
     }
 
 	std::string validate() const override {

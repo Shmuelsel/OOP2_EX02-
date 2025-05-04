@@ -5,7 +5,8 @@
 #include "config.h"
 #include "Field.h"
 #include "Button.h"
-
+#include <iomanip>
+#include <sstream>
 
 BookingForm::BookingForm(sf::RenderWindow& win, DialogueManager* manager) :window(win), formManager(manager) {
 
@@ -20,17 +21,21 @@ BookingForm::BookingForm(sf::RenderWindow& win, DialogueManager* manager) :windo
 }
 
 std::string BookingForm::setDefaultDate() {
-	time_t now = time(0);
-	tm ltm;
-	localtime_s(&ltm, &now);
-	return std::to_string(1900 + ltm.tm_year) + "-" +
-		std::to_string(1 + ltm.tm_mon) + "-" +
-		std::to_string(ltm.tm_mday);
+    time_t now = time(0);
+    tm ltm;
+    localtime_s(&ltm, &now);
+
+    std::ostringstream oss;
+    oss << (1900 + ltm.tm_year) << "-"
+        << std::setw(2) << std::setfill('0') << (1 + ltm.tm_mon) << "-"
+        << std::setw(2) << std::setfill('0') << ltm.tm_mday;
+
+    return oss.str();
 }
 
 void BookingForm::initializeFields() {
 	fields.push_back(std::make_unique<Field<std::string>>("Name:", "", std::make_unique<NameValidator>()));
-	fields.push_back(std::make_unique<Field<std::string>>("ID:", "", std::make_unique<IDValidator>()));
+	fields.push_back(std::make_unique<Field<int>>("ID:", 0, std::make_unique<IDValidator>()));
 	fields.push_back(std::make_unique<Field<std::string>>("Address:", "", std::make_unique<AddressValidator>()));
 	fields.push_back(std::make_unique<Field<std::string>>("Email:", "", std::make_unique<EmailValidator>()));
 
