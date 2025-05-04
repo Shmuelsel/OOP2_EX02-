@@ -2,6 +2,8 @@
 #define HOTELBOOKINGFORM_H
 
 #include "BookingForm.h"
+
+
 class HotelBookingForm : public BookingForm {
 public:
     HotelBookingForm(sf::RenderWindow& win, DialogueManager* manager);

@@ -7,6 +7,8 @@
 #include <array>
 #include "Field.h"
 #include "Button.h"
+#include "FieldBase.h"
+#include "MultiChoiceField.h"
 
 class DialogueManager;
 
