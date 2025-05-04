@@ -75,8 +75,8 @@ void BookingForm::openConfirmationWindow() {
     formErrorText.setPosition(50, yPos);
     yPos += 30;
 
-    Button approveButton("APPROVE", 150, yPos, 100, 40, sf::Color(50,150,50));
-    Button cancelButton("CANCEL", 350, yPos, 100, 40, sf::Color(180,0,0));
+    Button approveButton("APPROVE", 150, yPos, 130, 40, sf::Color(50,150,50));
+    Button cancelButton("CANCEL", 350, yPos, 130, 40, sf::Color(180,0,0));
 
     bool approved = false;
     while (confirmWindow.isOpen()) {
@@ -170,7 +170,7 @@ void BookingForm::handleInput(sf::Event event) {
             // טיפול בבחירת שדה פעיל
             float yOffset = 60;
             for (size_t i = 0; i < fields.size(); ++i) {
-                sf::FloatRect inputBoxBounds(240, yOffset - 5, 250, 35);
+                sf::FloatRect inputBoxBounds(240, yOffset - 5, 350, 35);
                 if (inputBoxBounds.contains(mousePos)) {
                     activeField = i;
                     return;
