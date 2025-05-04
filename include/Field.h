@@ -9,6 +9,8 @@
 #include "Button.h"
 #include "FieldBase.h"
 
+class DialogueManager;
+
 template <typename T>
 class Field : public FieldBase {
 private:
@@ -24,7 +26,7 @@ public:
     Field(const std::string& label, const T& defaultValue, std::unique_ptr<Validator<T>> validator)
         : label(label), value(defaultValue), validator(std::move(validator)) {
 
-		font.loadFromFile("C:/Windows/Fonts/arialbd.ttf");
+		font = DialogueManager::getFont();
 		labelText.setFont(font);
 		labelText.setCharacterSize(18);
 		labelText.setFillColor(sf::Color(60, 60, 60));

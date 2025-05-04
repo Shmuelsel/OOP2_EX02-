@@ -6,11 +6,10 @@
 #include "Field.h"
 #include "Button.h"
 
+
 BookingForm::BookingForm(sf::RenderWindow& win, DialogueManager* manager) :window(win), formManager(manager) {
 
-    if (!font.loadFromFile("C:/Windows/Fonts/arialbd.ttf")) {
-        std::cerr << "Error: Failed to load font 'arialbd.ttf' in BookingForm!" << std::endl;
-    }
+	font = DialogueManager::getFont();
 
     title.setFont(font);
     title.setCharacterSize(26);

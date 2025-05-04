@@ -1,6 +1,13 @@
 ﻿#include "DialogueManager.h"
 
-DialogueManager::DialogueManager() : activeForm(nullptr), isFormOpen(false) {}
+sf::Font DialogueManager::font;
+
+DialogueManager::DialogueManager() : activeForm(nullptr), isFormOpen(false) {
+	if (!font.loadFromFile("C:/Windows/Fonts/arialbd.ttf")) {
+		std::cerr << "Error: Failed to load font 'arialbd.ttf' in DialogueManager!" << std::endl;
+	}
+	formWindow.setFramerateLimit(60);
+}
 
 void DialogueManager::setActiveForm(std::unique_ptr<BookingForm> form) {
     if (isFormOpen) return;  // Prevent multiple openings
@@ -58,3 +65,6 @@ void DialogueManager::handleFormEvents() {
     }
 }
 
+const sf::Font& DialogueManager::getFont() {
+    return font;
+}

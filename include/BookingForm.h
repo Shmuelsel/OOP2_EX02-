@@ -36,7 +36,7 @@ protected:
     sf::Clock cursorTimer;
 	virtual void initializeFields();
     virtual std::string setDefaultDate();
-    bool handleCommonInput(sf::Event event);
+    //bool handleCommonInput(sf::Event event);
     bool showCursor = true;
 	std::vector<Button> buttons;
 	virtual std::string validateForm() const = 0;

@@ -18,6 +18,8 @@ private:
     sf::Color unselectedColor;
     sf::Color textSelectedColor;
     sf::Color textUnselectedColor;
+	sf::Text buttonText;
+	sf::RectangleShape buttonShape;
 
 public:
     Button(const std::string& text, float x, float y, float width = 100, float height = 30)

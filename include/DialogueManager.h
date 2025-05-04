@@ -11,12 +11,14 @@ private:
     std::unique_ptr<BookingForm> activeForm;
     sf::RenderWindow formWindow;
     bool isFormOpen;
+	static sf::Font font;
 
 public:
     DialogueManager();
     void setActiveForm(std::unique_ptr<BookingForm> form);
     void handleFormEvents();
     void closeForm();
+    static const sf::Font& getFont();
 };
 
 #endif // DIALOGUEMANAGER_H
